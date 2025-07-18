@@ -1,0 +1,8 @@
+@use "../base/color.scss";
+
+.card-base {
+  background-color: color.$background-primary;
+  border: 1px solid color.$border-default;
+  border-radius: 8px;
+  box-sizing: border-box;
+}

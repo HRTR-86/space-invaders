@@ -1,0 +1,20 @@
+@use "../base/color.scss";
+
+p.base {
+  font-size: 14px;
+
+  &.loading {
+    height: 16px;
+    width: 120px;
+    border-radius: 8px;
+    background-color: color.$object-loading;
+  }
+
+  &.primary {
+    color: color.$text-primary;
+  }
+
+  &.tertiary {
+    color: color.$text-tertiary;
+  }
+}

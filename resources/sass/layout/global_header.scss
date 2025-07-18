@@ -1,0 +1,96 @@
+body {
+  margin: 0px;
+}
+
+.global-header {
+  height: 56px;
+  width: 100%;
+  padding: 4px 8px;
+  border-bottom: solid 1px #d5d5d5;
+  background-color: #fff;
+  display: flex;
+  position: fixed;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  z-index: 999;
+
+  .logo {
+    height: 100%;
+    width: 80px;
+
+    a {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .popup-container {
+    height: 40px;
+
+    .popup-content {
+      width: 280px;
+      padding: 15px 15px 0px 15px;
+      z-index: 3;
+
+      .user-profile {
+        display: grid;
+        grid-template-columns: 60px calc(100% - 60px);
+        column-gap: 10px;
+        margin: 0 0 8px 0;
+
+        img {
+          height: 60px;
+          border-radius: 50%;
+          grid-row-start: 1;
+          grid-row-end: 3;
+        }
+
+        .email {
+          padding: 8px 0 0 0;
+          color: #9c9c9c;
+          font-size: 14px;
+        }
+
+        .user-name {
+          font-size: 18px;
+        }
+
+        p {
+          grid-column-start: 2;
+          grid-column-end: 3;
+        }
+      }
+
+      a {
+        height: 50px;
+        width: 100%;
+        font-size: 14px;
+        border-top: solid 1px #D1D1D1;
+      }
+
+      >button {
+        height: 50px;
+        width: 100%;
+      }
+
+      a:hover, >button:hover {
+        background-color: #e5efff;
+      }
+    }
+
+    >button {
+      display: flex;
+      align-items: center;
+
+      img {
+        height: 40px;
+        border-radius: 50%;
+      }
+
+      p {
+        margin: 0 8px 0 0;
+      }
+    }
+  }
+}

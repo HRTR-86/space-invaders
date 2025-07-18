@@ -1,0 +1,43 @@
+@use "../base/color.scss";
+
+.popup-base {
+  height: 36px;
+  position: relative;
+
+  button {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+
+    > * {
+      cursor: pointer;
+    }
+  }
+
+  .popup {
+    width: max-content;
+    margin: 8px 0 0 0;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    background-color: color.$background-primary;
+    box-shadow: 0 5px 10px #0003;
+    position: absolute;
+    border-radius: 8px;
+
+    .popup-item {
+      height: 32px;
+      line-height: 32px;
+      font-size: 12px;
+      cursor: pointer;
+
+      &.warning {
+        color: color.$theme-warning;
+      }
+
+      :not(:first-child) {
+        border: solid 1px color.$border-default;
+      }
+    }
+  }
+}

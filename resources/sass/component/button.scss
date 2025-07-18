@@ -1,0 +1,44 @@
+@use "../base/color.scss";
+
+button.base {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+
+  &.circle {
+    border-radius: 100px;
+  }
+}
+
+// ボタンの種類
+button.primary {
+  color: color.$theme-base;
+  background-color: color.$theme-primary;
+  border: none;
+}
+
+button.secondary {
+  color: color.$theme-primary;
+  background-color: color.$background-primary;
+  border: solid 1px color.$theme-primary;
+}
+
+button.tertiary {
+  color: color.$text-primary;
+  background: none;
+  border: none;
+}
+
+// ボタンのサイズ
+button.medium {
+  height: 36px;
+  padding: 8px;
+}
+
+button.small {
+  height: fit-content;
+  width: fit-content;
+  padding: 8px;
+}

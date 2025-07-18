@@ -1,0 +1,104 @@
+@use "../base/color.scss";
+
+.board {
+  .create-section {
+    .clickable-area{
+      height: calc(100vh - 56px);
+      width: 100vw;
+      position: fixed;
+      background-color: rgba(0,0,0,0.4);
+      cursor: crosshair;
+      z-index: 2;
+
+      .card-base {
+        min-height: 16%;
+        width: 25%;
+        padding: 8px 8px 4px 8px;
+        display: flex;
+        flex-direction: row;
+        cursor: default;
+        transition: transform .1s ease;
+
+        .content-left {
+          width: calc(100% - 30px);;
+          margin: 0 8px 0 0;
+          gap: 8px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
+          p {
+            margin: 4px 0 0 0;
+          }
+
+          .uploaded-file {
+            height: calc(100% - 100px);
+            width: 100%;
+            object-fit: cover;
+          }
+
+          .keyboard-monitor {
+            height: 100%;
+
+            textarea {
+              height: 100%;
+              width: 100%;
+              box-sizing: border-box;
+              background-color: color.$background-secondary;
+              border-radius: 4px;
+              border: solid 1px color.$border-default;
+              resize: none;
+            }
+          }
+        }
+
+        .content-right {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
+          label {
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: solid 1px color.$border-default;
+            border-radius: 4px;
+            cursor: pointer;
+
+            input {
+              display: none;
+            }
+
+            img {
+              margin: 4px;
+            }
+          }
+
+          button {
+            height: 32px;
+            width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+
+      > p {
+        margin: 8px 0 0 0;
+        color: color.$text-secondary;
+        text-align: center;
+      }
+    }
+
+    .create {
+      height: 48px;
+      width: 48px;
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 5;
+    }
+  }
+}

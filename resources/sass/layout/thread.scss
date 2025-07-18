@@ -1,0 +1,61 @@
+@use "../base/color.scss";
+
+.thread-modal {
+  .section {
+    .content-message {
+      .content-top {
+        display: flex;
+        justify-content: space-between;
+
+        .profile {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .image-base {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+        }
+      }
+
+      .content-main {
+        min-height: 36px;
+        margin: 4px 0 0 0;
+
+        p {
+          display: inline-block;
+        }
+
+        img {
+          max-height: 200px;
+          width: 100%;
+          margin: 8px 0 0 0;
+          border: solid 1px color.$border-default;
+          border-radius: 8px;
+          object-fit: cover;
+        }
+      }
+
+      .content-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .form {
+        margin: 4px 0 0 0;
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+
+        button {
+          height: 30px;
+          width: 30px;
+        }
+      }
+    }
+  }
+}

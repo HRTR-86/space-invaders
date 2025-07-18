@@ -1,0 +1,13 @@
+@use "../base/color.scss";
+
+.profile {
+  section {
+    height: 100%;
+    margin: 0 30% 0 30%;
+    padding: 16px;
+    box-sizing: border-box;
+    background-color: color.$background-primary;
+    border-left: solid 1px color.$border-default;
+    border-right: solid 1px color.$border-default;
+  }
+}

@@ -1,0 +1,5 @@
+@use "../base/color.scss";
+
+.board-body {
+  height: calc(100vh - 56px);
+}

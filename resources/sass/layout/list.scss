@@ -1,0 +1,75 @@
+@use "../base/color.scss";
+
+.list {
+  section {
+    height: 100%;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+
+    .card-base {
+      width: 30%;
+      padding: 8px 8px 0 8px;
+
+      .content-top {
+        display: flex;
+        justify-content: space-between;
+
+        .profile {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+        }
+      }
+
+      .content-main {
+        min-height: 36px;
+        margin: 4px 0 0 0;
+
+        p {
+          display: inline;
+        }
+
+        img {
+          max-height: 200px;
+          width: 100%;
+          margin: 8px 0 0 0;
+          border: solid 1px color.$border-default;
+          border-radius: 8px;
+          object-fit: cover;
+        }
+      }
+
+      .content-image {
+        max-height: 200px;
+        width: 100%;
+        margin: 8px 0 0 0;
+        object-fit: cover;
+        border: 1px solid color.$border-default;
+        border-radius: 8px;
+      }
+
+      .content-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        button {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: color.$text-tertiary;
+        }
+      }
+    }
+  }
+}

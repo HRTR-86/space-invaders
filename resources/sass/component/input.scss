@@ -1,0 +1,11 @@
+@use "../base/color.scss";
+
+input.base {
+  height: 36px;
+  width: 100%;
+  min-width: 100px;
+  border: solid 1px color.$border-default;
+  background-color: color.$background-secondary;
+  border-radius: 4px;
+  box-sizing: border-box;
+}

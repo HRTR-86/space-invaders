@@ -1,0 +1,17 @@
+@use "../base/color.scss";
+
+$height: 56px;
+
+header.base {
+  height: $height;
+  width: 100%;
+  padding: 4px 8px;
+  display: flex;
+  //position: fixed;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  z-index: 999;
+  background-color: color.$background-primary;
+  border-bottom: 1px solid color.$border-default;
+}

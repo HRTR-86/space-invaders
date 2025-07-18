@@ -1,0 +1,7 @@
+@use "../base/color.scss";
+
+.image-base {
+  &.loading {
+    background-color: color.$object-loading;
+  }
+}

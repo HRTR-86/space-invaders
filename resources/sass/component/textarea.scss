@@ -1,0 +1,17 @@
+@use "../base/color.scss";
+
+.textarea-base {
+  max-height: 40vh;
+  min-height: 30px;
+  width: 100%;
+  line-height: 22px;
+  background-color: color.$background-secondary;
+  border: 1px solid color.$border-default;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: none;
+
+  .can-resize {
+    resize: vertical;
+  }
+}
