@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { IPropsBase } from '@/scripts/Common/System';
+import { IPropsBase, sleep } from '@/scripts/Common/System';
 import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
 import { Invader } from '@/scripts/Pages/Game/Invader';
 import { Visible } from '@/scripts/Component/Visible';
@@ -8,6 +8,7 @@ import {
   BOARD_HEIGHT,
   BOARD_WIDTH,
   DEFAULT_INVADER_COLUMN_LIST,
+  DEFAULT_INVADER_COUNT,
   DEFAULT_INVADER_ROW_LIST,
   MAX_MOVE_COUNT,
   SLEEP_TIME,
@@ -17,14 +18,14 @@ import { Missile } from '@/scripts/Pages/Game/Missile';
 interface IProps extends IPropsBase {}
 
 export const Coordinate = (_: IProps) => {
-  const { invaderTwoDimensionalList, setInvaderTwoDimensionalList } = useInvaderContext();
+  const { invaderTwoDimensionalList, setInvaderTwoDimensionalList, destroyedInvaderCount } =
+    useInvaderContext();
 
   const [isStarted, setIsStarted] = useState<boolean>(false);
 
-  const intervalIdRef = useRef<number>(0);
   const sleepTimeRef = useRef<number>(SLEEP_TIME);
   const directionRef = useRef<TDirection>(EDirection.RIGHT);
-  const moveCountRef = useRef<number>(0);
+  const movedCountRef = useRef<number>(0);
 
   /**
    * インベーダーの一覧を初期化する
@@ -54,9 +55,10 @@ export const Coordinate = (_: IProps) => {
     targetInvaderList: boolean[][],
     xCoordinate: number,
     yCoordinate: number,
+    movedCount: number,
   ) => {
     // インベーダーが右端に到達した場合は段を下げる
-    if (moveCountRef.current === MAX_MOVE_COUNT) {
+    if (movedCount > MAX_MOVE_COUNT) {
       return yCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate - 1][xCoordinate];
     }
 
@@ -70,9 +72,10 @@ export const Coordinate = (_: IProps) => {
     targetInvaderList: boolean[][],
     xCoordinate: number,
     yCoordinate: number,
+    movedCount: number,
   ) => {
     // インベーダーが左端に到達した場合は段を下げる
-    if (moveCountRef.current === MAX_MOVE_COUNT) {
+    if (movedCount > MAX_MOVE_COUNT) {
       return yCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate - 1][xCoordinate];
     }
 
@@ -84,9 +87,7 @@ export const Coordinate = (_: IProps) => {
   /**
    * インベーダーを移動する
    */
-  const moveInvaderList = () => {
-    moveCountRef.current += 1;
-
+  const moveInvaderList = async (movedCount: number) => {
     setInvaderTwoDimensionalList((currentInvaderTwoDimensionalList) => {
       const newInvaderTwoDimensionalList = [];
       for (
@@ -105,6 +106,7 @@ export const Coordinate = (_: IProps) => {
               currentInvaderTwoDimensionalList,
               xCoordinate,
               yCoordinate,
+              movedCount,
             );
             continue;
           }
@@ -113,6 +115,7 @@ export const Coordinate = (_: IProps) => {
             currentInvaderTwoDimensionalList,
             xCoordinate,
             yCoordinate,
+            movedCount,
           );
         }
 
@@ -121,19 +124,24 @@ export const Coordinate = (_: IProps) => {
 
       return newInvaderTwoDimensionalList;
     });
+  };
 
-    if (moveCountRef.current > MAX_MOVE_COUNT) {
-      directionRef.current =
-        directionRef.current === EDirection.RIGHT ? EDirection.LEFT : EDirection.RIGHT;
-      moveCountRef.current = 0;
-      updateSleepTime();
+  /**
+   * インベーダーの移動方向を更新する
+   */
+  const handleChangeDirection = () => {
+    if (directionRef.current === EDirection.RIGHT) {
+      directionRef.current = EDirection.LEFT;
+      return;
     }
+
+    directionRef.current = EDirection.RIGHT;
   };
 
   /**
    * インベーダーの移動の待ち時間を更新する
    */
-  const updateSleepTime = () => {
+  const handleChangeSleepTime = () => {
     if (sleepTimeRef.current < 300) {
       return;
     }
@@ -144,31 +152,30 @@ export const Coordinate = (_: IProps) => {
   /**
    * スタートボタンがクリックされたときの処理
    */
-  const handleClickStart = () => {
-    intervalIdRef.current = setInterval(() => {
-      moveInvaderList();
-    }, sleepTimeRef.current);
-
+  const handleClickStart = async () => {
     setIsStarted(true);
+
+    while (true) {
+      await sleep(sleepTimeRef.current);
+
+      movedCountRef.current += 1;
+      await moveInvaderList(movedCountRef.current);
+
+      if (movedCountRef.current > MAX_MOVE_COUNT) {
+        movedCountRef.current = 0;
+        handleChangeDirection();
+        handleChangeSleepTime();
+      }
+
+      if (destroyedInvaderCount === DEFAULT_INVADER_COUNT) {
+        break;
+      }
+    }
   };
 
   useEffect(() => {
     initialInvaderList();
   }, []);
-
-  useEffect(() => {
-    if (sleepTimeRef.current === SLEEP_TIME) {
-      return;
-    }
-
-    clearInterval(intervalIdRef.current);
-
-    intervalIdRef.current = setInterval(() => {
-      moveInvaderList();
-    }, sleepTimeRef.current);
-
-    return () => clearInterval(intervalIdRef.current);
-  }, [sleepTimeRef.current]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>

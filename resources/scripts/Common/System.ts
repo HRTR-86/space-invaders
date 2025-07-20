@@ -10,3 +10,10 @@ export interface IPropsBase {
 interface ISx {
   [key: string]: string;
 }
+
+/**
+ * 指定した時間の間処理を停止する
+ */
+export const sleep = (time: number) => {
+  return new Promise((resolve) => setTimeout(resolve, time));
+};
