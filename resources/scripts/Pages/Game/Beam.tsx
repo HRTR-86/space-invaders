@@ -12,7 +12,7 @@ import { BOARD_HEIGHT } from '@/scripts/Config/Parameter';
 interface IProps extends IPropsBase {}
 
 export const Beam = (_: IProps) => {
-  const { invaderTwoDimensionalList, isHit } = useInvaderContext();
+  const { invaderTwoDimensionalList, isExist } = useInvaderContext();
   const { batteryCoordinate } = useBatteryContext();
   const { beamCoordinate, setBeamCoordinate } = useBeamContext();
   const { setImperative } = useImperativeContext();
@@ -46,7 +46,7 @@ export const Beam = (_: IProps) => {
             };
           }
 
-          if (isHit(shotBeamCoordinateX, newBeamCoordinateY)) {
+          if (isExist(shotBeamCoordinateX, newBeamCoordinateY)) {
             hitCoordinate = { x: shotBeamCoordinateX, y: newBeamCoordinateY };
             isAttacked = true;
           }

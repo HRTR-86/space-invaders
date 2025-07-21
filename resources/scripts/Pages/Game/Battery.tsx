@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { IPropsBase } from '@/scripts/Common/System';
 import { Visible } from '@/scripts/Component/Visible';
 import { useBatteryContext } from '@/scripts/Provider/BatteryProvider';
@@ -8,7 +8,10 @@ import { BOARD_WIDTH } from '@/scripts/Config/Parameter';
 interface IProps extends IPropsBase {}
 
 export const Battery = (_: IProps) => {
-  const { batteryCoordinate, setBatteryCoordinate } = useBatteryContext();
+  const { batteryCoordinate, setBatteryCoordinate, isDestroyed } = useBatteryContext();
+
+  let isDestroyedRef = useRef(isDestroyed);
+  isDestroyedRef.current = isDestroyed;
 
   /**
    * 砲台を右に移動する
@@ -52,6 +55,10 @@ export const Battery = (_: IProps) => {
    * キーボードが押されたときの処理
    */
   const handleKeyDown = (event: KeyboardEvent) => {
+    if (isDestroyedRef.current) {
+      return;
+    }
+
     if (event.code === EKeyCode.ARROW_RIGHT) {
       moveBatteryToRight(batteryCoordinate);
     }
@@ -78,7 +85,7 @@ export const Battery = (_: IProps) => {
           position: 'absolute',
           top: `700px`,
           left: `calc(${batteryCoordinate.x * 10}px - 20px)`,
-          backgroundColor: 'black',
+          backgroundColor: isDestroyed ? 'red' : 'black',
         }}
       />
     </Visible>

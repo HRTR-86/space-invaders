@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IPropsBase, sleep } from '@/scripts/Common/System';
 import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
 import { Invader } from '@/scripts/Pages/Game/Invader';
+import { MissileList } from '@/scripts/Pages/Game/MissileList';
 import { Visible } from '@/scripts/Component/Visible';
 import { EDirection, TDirection } from '@/scripts/Enum/Direction';
 import {
@@ -11,9 +12,8 @@ import {
   DEFAULT_INVADER_COUNT,
   DEFAULT_INVADER_ROW_LIST,
   MAX_MOVE_COUNT,
-  SLEEP_TIME,
+  INVADER_SLEEP_TIME,
 } from '@/scripts/Config/Parameter';
-import { Missile } from '@/scripts/Pages/Game/Missile';
 
 interface IProps extends IPropsBase {}
 
@@ -23,7 +23,7 @@ export const Coordinate = (_: IProps) => {
 
   const [isStarted, setIsStarted] = useState<boolean>(false);
 
-  const sleepTimeRef = useRef<number>(SLEEP_TIME);
+  const sleepTimeRef = useRef<number>(INVADER_SLEEP_TIME);
   const directionRef = useRef<TDirection>(EDirection.RIGHT);
   const movedCountRef = useRef<number>(0);
 
@@ -182,22 +182,21 @@ export const Coordinate = (_: IProps) => {
       <Visible isOpen={!isStarted}>
         <button onClick={handleClickStart}>Start</button>
       </Visible>
-      <Missile
-        xCoordinate={60}
-        yCoordinate={10}
-      />
-      {invaderTwoDimensionalList.map((invaderList, yCoordinate) => {
-        return invaderList.map((invader, xCoordinate) => {
-          return (
-            <Invader
-              key={`${yCoordinate}-${xCoordinate}`}
-              xCoordinate={yCoordinate}
-              yCoordinate={xCoordinate}
-              isDisplay={invader}
-            />
-          );
-        });
-      })}
+      <Visible isOpen={isStarted}>
+        <MissileList />
+        {invaderTwoDimensionalList.map((invaderList, yCoordinate) => {
+          return invaderList.map((invader, xCoordinate) => {
+            return (
+              <Invader
+                key={`${yCoordinate}-${xCoordinate}`}
+                xCoordinate={yCoordinate}
+                yCoordinate={xCoordinate}
+                isDisplay={invader}
+              />
+            );
+          });
+        })}
+      </Visible>
     </div>
   );
 };

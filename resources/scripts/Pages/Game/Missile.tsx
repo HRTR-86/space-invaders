@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { IPropsBase } from '@/scripts/Common/System';
+import { useEffect, useState } from 'react';
+import { IPropsBase, sleep } from '@/scripts/Common/System';
 import { Visible } from '@/scripts/Component/Visible';
 import { useBatteryContext } from '@/scripts/Provider/BatteryProvider';
 import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
-import { BOARD_HEIGHT } from '@/scripts/Config/Parameter';
 import { EImperative } from '@/scripts/Enum/Imperative';
+import { BOARD_HEIGHT, MISSILE_SLEEP_TIME } from '@/scripts/Config/Parameter';
 
 interface Coordinate {
   x: number;
@@ -14,15 +14,14 @@ interface Coordinate {
 interface IProps extends IPropsBase {
   xCoordinate: number;
   yCoordinate: number;
+  onFinished: () => void;
 }
 
-export const Missile = ({ xCoordinate, yCoordinate }: IProps) => {
-  const { isHit } = useBatteryContext();
-  const [missileCoordinate, setMissileCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
+export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
+  const { isExist } = useBatteryContext();
   const { setImperative } = useImperativeContext();
 
-  const isAttackingRef = useRef<boolean>(false);
-  const intervalIdRef = useRef<number>(0);
+  const [missileCoordinate, setMissileCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
 
   /**
    * ミサイルを撃つ
@@ -33,25 +32,27 @@ export const Missile = ({ xCoordinate, yCoordinate }: IProps) => {
   ): Promise<boolean> => {
     setMissileCoordinate({ x: shotMissileCoordinateX, y: shotMissileCoordinateY });
 
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       let isAttacked = false;
+      let isFinished = false;
 
-      intervalIdRef.current = setInterval(() => {
+      while (true) {
         setMissileCoordinate((currentMissileCoordinate) => {
           const newMissileCoordinateY = currentMissileCoordinate.y + 1;
 
-          if (isHit(shotMissileCoordinateX, newMissileCoordinateY)) {
+          if (isExist(shotMissileCoordinateX, newMissileCoordinateY)) {
             isAttacked = true;
 
             // 初期地点にミサイルを戻す
             return {
               x: shotMissileCoordinateX,
-              y: BOARD_HEIGHT,
+              y: shotMissileCoordinateY,
             };
           }
 
           if (newMissileCoordinateY > BOARD_HEIGHT) {
-            clearInterval(intervalIdRef.current);
+            isFinished = true;
+
             return {
               x: shotMissileCoordinateX,
               y: shotMissileCoordinateY,
@@ -65,40 +66,37 @@ export const Missile = ({ xCoordinate, yCoordinate }: IProps) => {
           };
         });
 
-        if (isAttacked) {
-          clearInterval(intervalIdRef.current);
-          isAttackingRef.current = false;
-          resolve(true);
+        if (isAttacked || isFinished) {
+          resolve(isAttacked);
+          break;
         }
-      }, 25);
+
+        await sleep(MISSILE_SLEEP_TIME);
+      }
     });
   };
 
   useEffect(() => {
-    if (xCoordinate < 0 || yCoordinate < 0) {
+    if (xCoordinate <= 0 || yCoordinate <= 0) {
       return;
     }
 
-    shotMissile(xCoordinate, yCoordinate).then((isHit) => {
-      if (isHit) {
+    shotMissile(xCoordinate, yCoordinate).then((isAttacked) => {
+      if (isAttacked) {
         setImperative({
           message: EImperative.MISSILE_HIT_BATTERY,
         });
       }
-    });
 
-    return () => {
-      if (intervalIdRef.current !== 0) {
-        clearInterval(intervalIdRef.current);
-      }
-    };
+      onFinished();
+    });
   }, [xCoordinate, yCoordinate]);
 
   return (
-    <Visible isOpen={missileCoordinate.x !== 0 && missileCoordinate.y !== 0}>
+    <Visible isOpen={yCoordinate !== missileCoordinate.y}>
       <div
         style={{
-          height: '20px',
+          height: '15px',
           width: '4px',
           position: 'absolute',
           top: `${missileCoordinate.y * 10}px`,

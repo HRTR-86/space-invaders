@@ -11,7 +11,7 @@ interface Coordinate {
 interface InvaderContext {
   invaderTwoDimensionalList: boolean[][];
   setInvaderTwoDimensionalList: Dispatch<SetStateAction<boolean[][]>>;
-  isHit: (x: number, y: number) => boolean;
+  isExist: (x: number, y: number) => boolean;
   handleChangeAttacked: (x: number, y: number) => void;
   destroyedInvaderCount: number;
 }
@@ -21,7 +21,7 @@ interface IProps extends IPropsBase {}
 const InvaderContext = createContext<InvaderContext>({
   invaderTwoDimensionalList: [[]],
   setInvaderTwoDimensionalList: () => {},
-  isHit: () => false,
+  isExist: () => false,
   handleChangeAttacked: () => {},
   destroyedInvaderCount: 0,
 });
@@ -33,9 +33,9 @@ export const InvaderProvider = ({ children }: IProps) => {
   const [destroyedInvaderCount, setDestroyedInvaderCount] = useState<number>(0);
 
   /**
-   * インベーダーに当たったかどうかを判定する
+   * インベーダーが存在するかどうかを確認する
    */
-  const isHit = (x: number, y: number): boolean => {
+  const isExist = (x: number, y: number): boolean => {
     return (
       invaderTwoDimensionalList[y][x - 1] ||
       invaderTwoDimensionalList[y][x] ||
@@ -73,7 +73,7 @@ export const InvaderProvider = ({ children }: IProps) => {
       value={{
         invaderTwoDimensionalList,
         setInvaderTwoDimensionalList,
-        isHit,
+        isExist,
         handleChangeAttacked,
         destroyedInvaderCount,
       }}
