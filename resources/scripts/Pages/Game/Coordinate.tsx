@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { IPropsBase, sleep } from '@/scripts/Common/System';
+import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
 import { Invader } from '@/scripts/Pages/Game/Invader';
 import { MissileList } from '@/scripts/Pages/Game/MissileList';
-import { Visible } from '@/scripts/Component/Visible';
 import { EDirection, TDirection } from '@/scripts/Enum/Direction';
+import { EGameStatus } from '@/scripts/Enum/GameStatus';
 import {
   BOARD_HEIGHT,
   BOARD_WIDTH,
@@ -18,10 +19,9 @@ import {
 interface IProps extends IPropsBase {}
 
 export const Coordinate = (_: IProps) => {
+  const { setGameStatus } = useGameStatusContext();
   const { invaderTwoDimensionalList, setInvaderTwoDimensionalList, destroyedInvaderCount } =
     useInvaderContext();
-
-  const [isStarted, setIsStarted] = useState<boolean>(false);
 
   const sleepTimeRef = useRef<number>(INVADER_SLEEP_TIME);
   const directionRef = useRef<TDirection>(EDirection.RIGHT);
@@ -30,7 +30,7 @@ export const Coordinate = (_: IProps) => {
   /**
    * インベーダーの一覧を初期化する
    */
-  const initialInvaderList = () => {
+  const handeInitialInvaderList = () => {
     setInvaderTwoDimensionalList(
       Array.from({ length: BOARD_HEIGHT }, (_, yCoordinate) => {
         return Array.from({ length: BOARD_WIDTH }, (_, xCoordinate) => {
@@ -49,6 +49,13 @@ export const Coordinate = (_: IProps) => {
   };
 
   /**
+   * インベーダーが端に到達したかどうかを確認する
+   */
+  const isAtEdge = (yCoordinate: number): boolean => {
+    return yCoordinate === BOARD_HEIGHT - 1;
+  };
+
+  /**
    * インベーダーを右に移動する
    */
   const moveInvaderToRight = (
@@ -56,10 +63,16 @@ export const Coordinate = (_: IProps) => {
     xCoordinate: number,
     yCoordinate: number,
     movedCount: number,
-  ) => {
+  ): boolean => {
     // インベーダーが右端に到達した場合は段を下げる
     if (movedCount > MAX_MOVE_COUNT) {
-      return yCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate - 1][xCoordinate];
+      const isExist = yCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate - 1][xCoordinate];
+      if (isExist && isAtEdge(yCoordinate)) {
+        // TODO: imperativeを使用する形に修正する
+        setGameStatus(EGameStatus.GAME_OVER);
+      }
+
+      return isExist;
     }
 
     return xCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate][xCoordinate - 1];
@@ -76,7 +89,13 @@ export const Coordinate = (_: IProps) => {
   ) => {
     // インベーダーが左端に到達した場合は段を下げる
     if (movedCount > MAX_MOVE_COUNT) {
-      return yCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate - 1][xCoordinate];
+      const isExist = yCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate - 1][xCoordinate];
+      if (isExist && isAtEdge(yCoordinate)) {
+        // TODO: imperativeを使用する形に修正する
+        setGameStatus(EGameStatus.GAME_OVER);
+      }
+
+      return isExist;
     }
 
     return xCoordinate + 1 >= targetInvaderList[yCoordinate].length
@@ -87,9 +106,9 @@ export const Coordinate = (_: IProps) => {
   /**
    * インベーダーを移動する
    */
-  const moveInvaderList = async (movedCount: number) => {
+  const moveInvaderList = async (movedCount: number): Promise<void> => {
     setInvaderTwoDimensionalList((currentInvaderTwoDimensionalList) => {
-      const newInvaderTwoDimensionalList = [];
+      const newInvaderTwoDimensionalList: boolean[][] = [];
       for (
         let yCoordinate = 0;
         yCoordinate < currentInvaderTwoDimensionalList.length;
@@ -152,9 +171,7 @@ export const Coordinate = (_: IProps) => {
   /**
    * スタートボタンがクリックされたときの処理
    */
-  const handleClickStart = async () => {
-    setIsStarted(true);
-
+  const handleStart = async () => {
     while (true) {
       await sleep(sleepTimeRef.current);
 
@@ -174,29 +191,25 @@ export const Coordinate = (_: IProps) => {
   };
 
   useEffect(() => {
-    initialInvaderList();
+    handeInitialInvaderList();
+    handleStart();
   }, []);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <Visible isOpen={!isStarted}>
-        <button onClick={handleClickStart}>Start</button>
-      </Visible>
-      <Visible isOpen={isStarted}>
-        <MissileList />
-        {invaderTwoDimensionalList.map((invaderList, yCoordinate) => {
-          return invaderList.map((invader, xCoordinate) => {
-            return (
-              <Invader
-                key={`${yCoordinate}-${xCoordinate}`}
-                xCoordinate={yCoordinate}
-                yCoordinate={xCoordinate}
-                isDisplay={invader}
-              />
-            );
-          });
-        })}
-      </Visible>
+      <MissileList />
+      {invaderTwoDimensionalList.map((invaderList, yCoordinate) => {
+        return invaderList.map((invader, xCoordinate) => {
+          return (
+            <Invader
+              key={`${yCoordinate}-${xCoordinate}`}
+              xCoordinate={yCoordinate}
+              yCoordinate={xCoordinate}
+              isDisplay={invader}
+            />
+          );
+        });
+      })}
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
 import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
 import { EKeyCode } from '@/scripts/Enum/KeyCode';
 import { EImperative } from '@/scripts/Enum/Imperative';
-import { BOARD_HEIGHT } from '@/scripts/Config/Parameter';
+import { BEAM_SLEEP_TIME, BOARD_HEIGHT } from '@/scripts/Config/Parameter';
 
 interface IProps extends IPropsBase {}
 
@@ -71,7 +71,7 @@ export const Beam = (_: IProps) => {
           isAttackingRef.current = false;
           resolve(hitCoordinate);
         }
-      }, 5);
+      }, BEAM_SLEEP_TIME);
     });
   };
 
@@ -105,7 +105,7 @@ export const Beam = (_: IProps) => {
     <Visible isOpen={beamCoordinate.y < 70}>
       <div
         style={{
-          height: '30px',
+          height: '20px',
           width: '4px',
           position: 'absolute',
           top: `${beamCoordinate.y * 10}px`,
