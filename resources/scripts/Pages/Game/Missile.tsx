@@ -101,7 +101,7 @@ export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
           position: 'absolute',
           top: `${missileCoordinate.y * 10}px`,
           left: `${missileCoordinate.x * 10}px`,
-          backgroundColor: 'black',
+          backgroundColor: 'white',
         }}
       />
     </Visible>

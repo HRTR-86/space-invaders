@@ -85,7 +85,7 @@ export const Battery = (_: IProps) => {
           position: 'absolute',
           top: `700px`,
           left: `calc(${batteryCoordinate.x * 10}px - 20px)`,
-          backgroundColor: isDestroyed ? 'red' : 'black',
+          backgroundColor: isDestroyed ? 'red' : 'white',
         }}
       />
     </Visible>

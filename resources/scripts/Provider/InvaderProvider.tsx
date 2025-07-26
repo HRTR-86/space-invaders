@@ -4,6 +4,7 @@ import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
 import { EImperative } from '@/scripts/Enum/Imperative';
 import { EGameStatus } from '@/scripts/Enum/GameStatus';
+import { EInvaderType, TInvaderType } from '@/scripts/Enum/InvaderType';
 import { DEFAULT_INVADER_COUNT } from '@/scripts/Config/Parameter';
 
 interface Coordinate {
@@ -12,8 +13,8 @@ interface Coordinate {
 }
 
 interface InvaderContext {
-  invaderTwoDimensionalList: boolean[][];
-  setInvaderTwoDimensionalList: Dispatch<SetStateAction<boolean[][]>>;
+  invaderTwoDimensionalList: TInvaderType[][];
+  setInvaderTwoDimensionalList: Dispatch<SetStateAction<TInvaderType[][]>>;
   isExist: (x: number, y: number) => boolean;
   handleChangeAttacked: (x: number, y: number) => void;
   destroyedInvaderCount: number;
@@ -33,7 +34,7 @@ export const InvaderProvider = ({ children }: IProps) => {
   const { imperative } = useImperativeContext();
   const { setGameStatus } = useGameStatusContext();
 
-  const [invaderTwoDimensionalList, setInvaderTwoDimensionalList] = useState<boolean[][]>([]);
+  const [invaderTwoDimensionalList, setInvaderTwoDimensionalList] = useState<TInvaderType[][]>([]);
   const [destroyedInvaderCount, setDestroyedInvaderCount] = useState<number>(0);
 
   /**
@@ -41,11 +42,11 @@ export const InvaderProvider = ({ children }: IProps) => {
    */
   const isExist = (x: number, y: number): boolean => {
     return (
-      invaderTwoDimensionalList[y][x - 2] ||
-      invaderTwoDimensionalList[y][x - 1] ||
-      invaderTwoDimensionalList[y][x] ||
-      invaderTwoDimensionalList[y][x + 1] ||
-      invaderTwoDimensionalList[y][x + 2]
+      invaderTwoDimensionalList[y][x - 2] !== EInvaderType.DEFAULT ||
+      invaderTwoDimensionalList[y][x - 1] !== EInvaderType.DEFAULT ||
+      invaderTwoDimensionalList[y][x] !== EInvaderType.DEFAULT ||
+      invaderTwoDimensionalList[y][x + 1] !== EInvaderType.DEFAULT ||
+      invaderTwoDimensionalList[y][x + 2] !== EInvaderType.DEFAULT
     );
   };
 
@@ -55,9 +56,9 @@ export const InvaderProvider = ({ children }: IProps) => {
   const handleChangeAttacked = (x: number, y: number): void => {
     setInvaderTwoDimensionalList((currentInvaderList) => {
       const newInvaderList = [...currentInvaderList];
-      newInvaderList[y][x - 1] = false;
-      newInvaderList[y][x] = false;
-      newInvaderList[y][x + 1] = false;
+      newInvaderList[y][x - 1] = EInvaderType.DEFAULT;
+      newInvaderList[y][x] = EInvaderType.DEFAULT;
+      newInvaderList[y][x + 1] = EInvaderType.DEFAULT;
 
       return newInvaderList;
     });

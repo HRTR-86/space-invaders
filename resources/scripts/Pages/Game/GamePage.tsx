@@ -14,7 +14,12 @@ export const GamePage = (_: IProps) => {
   const { gameStatus } = useGameStatusContext();
 
   return (
-    <div>
+    <div
+      style={{
+        height: '100vh',
+        backgroundColor: 'black',
+      }}
+    >
       <Visible isOpen={gameStatus !== EGameStatus.PLAYING}>
         <GameStatus />
       </Visible>

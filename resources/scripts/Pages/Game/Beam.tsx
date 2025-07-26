@@ -110,7 +110,7 @@ export const Beam = (_: IProps) => {
           position: 'absolute',
           top: `${beamCoordinate.y * 10}px`,
           left: `${beamCoordinate.x * 10}px`,
-          backgroundColor: 'black',
+          backgroundColor: 'white',
         }}
       />
     </Visible>

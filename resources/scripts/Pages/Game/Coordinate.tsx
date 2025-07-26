@@ -6,14 +6,16 @@ import { Invader } from '@/scripts/Pages/Game/Invader';
 import { MissileList } from '@/scripts/Pages/Game/MissileList';
 import { EDirection, TDirection } from '@/scripts/Enum/Direction';
 import { EGameStatus } from '@/scripts/Enum/GameStatus';
+import { EInvaderType, TInvaderType } from '@/scripts/Enum/InvaderType';
 import {
   BOARD_HEIGHT,
   BOARD_WIDTH,
   DEFAULT_INVADER_COLUMN_LIST,
   DEFAULT_INVADER_COUNT,
-  DEFAULT_INVADER_ROW_LIST,
+  DEFAULT_OCTOPUS_INVADER_ROW_LIST,
   MAX_MOVE_COUNT,
   INVADER_SLEEP_TIME,
+  DEFAULT_CRAB_INVADER_ROW_LIST,
 } from '@/scripts/Config/Parameter';
 
 interface IProps extends IPropsBase {}
@@ -32,17 +34,21 @@ export const Coordinate = (_: IProps) => {
    */
   const handeInitialInvaderList = () => {
     setInvaderTwoDimensionalList(
-      Array.from({ length: BOARD_HEIGHT }, (_, yCoordinate) => {
-        return Array.from({ length: BOARD_WIDTH }, (_, xCoordinate) => {
-          if (!DEFAULT_INVADER_ROW_LIST.includes(yCoordinate)) {
-            return false;
-          }
-
+      Array.from({ length: BOARD_HEIGHT }, (_, yCoordinate): TInvaderType[] => {
+        return Array.from({ length: BOARD_WIDTH }, (_, xCoordinate): TInvaderType => {
           if (!DEFAULT_INVADER_COLUMN_LIST.includes(xCoordinate)) {
-            return false;
+            return EInvaderType.DEFAULT;
           }
 
-          return true;
+          if (DEFAULT_OCTOPUS_INVADER_ROW_LIST.includes(yCoordinate)) {
+            return EInvaderType.OCTOPUS;
+          }
+
+          if (DEFAULT_CRAB_INVADER_ROW_LIST.includes(yCoordinate)) {
+            return EInvaderType.CRAB;
+          }
+
+          return EInvaderType.DEFAULT;
         });
       }),
     );
@@ -59,47 +65,55 @@ export const Coordinate = (_: IProps) => {
    * インベーダーを右に移動する
    */
   const moveInvaderToRight = (
-    targetInvaderList: boolean[][],
+    targetInvaderList: TInvaderType[][],
     xCoordinate: number,
     yCoordinate: number,
     movedCount: number,
-  ): boolean => {
+  ): TInvaderType => {
     // インベーダーが右端に到達した場合は段を下げる
     if (movedCount > MAX_MOVE_COUNT) {
-      const isExist = yCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate - 1][xCoordinate];
-      if (isExist && isAtEdge(yCoordinate)) {
+      const currentInvaderType =
+        yCoordinate - 1 < 0
+          ? EInvaderType.DEFAULT
+          : targetInvaderList[yCoordinate - 1][xCoordinate];
+      if (currentInvaderType && isAtEdge(yCoordinate)) {
         // TODO: imperativeを使用する形に修正する
         setGameStatus(EGameStatus.GAME_OVER);
       }
 
-      return isExist;
+      return currentInvaderType;
     }
 
-    return xCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate][xCoordinate - 1];
+    return xCoordinate - 1 < 0
+      ? EInvaderType.DEFAULT
+      : targetInvaderList[yCoordinate][xCoordinate - 1];
   };
 
   /**
    * インベーダーを左に移動する
    */
   const moveInvaderToLeft = (
-    targetInvaderList: boolean[][],
+    targetInvaderList: TInvaderType[][],
     xCoordinate: number,
     yCoordinate: number,
     movedCount: number,
-  ) => {
+  ): TInvaderType => {
     // インベーダーが左端に到達した場合は段を下げる
     if (movedCount > MAX_MOVE_COUNT) {
-      const isExist = yCoordinate - 1 < 0 ? false : targetInvaderList[yCoordinate - 1][xCoordinate];
-      if (isExist && isAtEdge(yCoordinate)) {
+      const currentInvaderType =
+        yCoordinate - 1 < 0
+          ? EInvaderType.DEFAULT
+          : targetInvaderList[yCoordinate - 1][xCoordinate];
+      if (currentInvaderType !== EInvaderType.DEFAULT && isAtEdge(yCoordinate)) {
         // TODO: imperativeを使用する形に修正する
         setGameStatus(EGameStatus.GAME_OVER);
       }
 
-      return isExist;
+      return currentInvaderType;
     }
 
     return xCoordinate + 1 >= targetInvaderList[yCoordinate].length
-      ? false
+      ? EInvaderType.DEFAULT
       : targetInvaderList[yCoordinate][xCoordinate + 1];
   };
 
@@ -108,13 +122,13 @@ export const Coordinate = (_: IProps) => {
    */
   const moveInvaderList = async (movedCount: number): Promise<void> => {
     setInvaderTwoDimensionalList((currentInvaderTwoDimensionalList) => {
-      const newInvaderTwoDimensionalList: boolean[][] = [];
+      const newInvaderTwoDimensionalList: TInvaderType[][] = [];
       for (
         let yCoordinate = 0;
         yCoordinate < currentInvaderTwoDimensionalList.length;
         yCoordinate++
       ) {
-        const newInvaderList = [];
+        const newInvaderList: TInvaderType[] = [];
         for (
           let xCoordinate = 0;
           xCoordinate < currentInvaderTwoDimensionalList[yCoordinate].length;
@@ -205,7 +219,7 @@ export const Coordinate = (_: IProps) => {
               key={`${yCoordinate}-${xCoordinate}`}
               xCoordinate={yCoordinate}
               yCoordinate={xCoordinate}
-              isDisplay={invader}
+              invader={invader}
             />
           );
         });
