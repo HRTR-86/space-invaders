@@ -15,7 +15,16 @@ export const GameStatus = (_: IProps) => {
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div
+      style={{
+        height: '100vh',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+      }}
+    >
       {gameStatus === EGameStatus.DEFAULT && <button onClick={handleStart}>Start</button>}
       {gameStatus === EGameStatus.GAME_OVER && <p>Game Over</p>}
       {gameStatus === EGameStatus.GAME_CLEAR && <p>Game Clear</p>}

@@ -76,6 +76,21 @@ export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
     });
   };
 
+  /**
+   * ミサイルの表示条件を満たしているかどうかを確認する
+   */
+  const isDisplay = (x: number, y: number): boolean => {
+    if (y === missileCoordinate.y) {
+      return false;
+    }
+
+    if (x === 0 || y === 0) {
+      return false;
+    }
+
+    return true;
+  }
+
   useEffect(() => {
     if (xCoordinate <= 0 || yCoordinate <= 0) {
       return;
@@ -93,7 +108,7 @@ export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
   }, [xCoordinate, yCoordinate]);
 
   return (
-    <Visible isOpen={yCoordinate !== missileCoordinate.y}>
+    <Visible isOpen={isDisplay(xCoordinate, yCoordinate) }>
       <div
         style={{
           height: '15px',

@@ -25,8 +25,8 @@ export const MissileList = (_: IProps) => {
     }
 
     for (let count = 0; count < 30; count++) {
-      const randomXCoordinate = Math.floor(Math.random() * BOARD_WIDTH - 24) + 12;
-      const randomYCoordinate = Math.floor(Math.random() * BOARD_HEIGHT - 7) + 7;
+      const randomXCoordinate = Math.floor(Math.random() * (BOARD_WIDTH - 24)) + 12;
+      const randomYCoordinate = Math.floor(Math.random() * (BOARD_HEIGHT - 7)) + 7;
 
       if (!isExist(randomXCoordinate, randomYCoordinate)) {
         continue;

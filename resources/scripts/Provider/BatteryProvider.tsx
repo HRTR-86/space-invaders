@@ -8,9 +8,11 @@ import {
   useState,
 } from 'react';
 import { IPropsBase, sleep } from '@/scripts/Common/System';
+import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
-import { BOARD_HEIGHT, BOARD_WIDTH } from '@/scripts/Config/Parameter';
+import { EGameStatus } from '@/scripts/Enum/GameStatus';
 import { EImperative } from '@/scripts/Enum/Imperative';
+import { BOARD_HEIGHT, BOARD_WIDTH, LIFE_COUNT } from '@/scripts/Config/Parameter';
 
 interface Coordinate {
   x: number;
@@ -22,6 +24,7 @@ interface BatteryContext {
   setBatteryCoordinate: Dispatch<SetStateAction<Coordinate>>;
   isExist: (x: number, y: number) => boolean;
   isDestroyed: boolean;
+  life: number;
 }
 
 interface IProps extends IPropsBase {}
@@ -31,16 +34,19 @@ const BatteryContext = createContext<BatteryContext>({
   setBatteryCoordinate: () => {},
   isExist: () => false,
   isDestroyed: false,
+  life: LIFE_COUNT,
 });
 
 export const BatteryProvider = ({ children }: IProps) => {
   const { imperative } = useImperativeContext();
+  const { setGameStatus } = useGameStatusContext();
 
   const [batteryCoordinate, setBatteryCoordinate] = useState<Coordinate>({
     x: Math.round(BOARD_WIDTH / 2),
     y: BOARD_HEIGHT,
   });
   const [isDestroyed, setIsDestroyed] = useState<boolean>(false);
+  const [life, setLife] = useState<number>(LIFE_COUNT);
 
   const batteryCoordinateRef = useRef<Coordinate>(batteryCoordinate);
   batteryCoordinateRef.current = batteryCoordinate;
@@ -63,6 +69,15 @@ export const BatteryProvider = ({ children }: IProps) => {
     setIsDestroyed(true);
     await sleep(2000);
     setIsDestroyed(false);
+    setLife((currentLife) => {
+      if (currentLife === 0) {
+        // TODO: imperativeを使用する形に修正する
+        setGameStatus(EGameStatus.GAME_OVER);
+        return 0;
+      }
+
+      return currentLife - 1;
+    });
   };
 
   useEffect(() => {
@@ -75,7 +90,7 @@ export const BatteryProvider = ({ children }: IProps) => {
 
   return (
     <BatteryContext.Provider
-      value={{ batteryCoordinate, setBatteryCoordinate, isExist, isDestroyed }}
+      value={{ batteryCoordinate, setBatteryCoordinate, isExist, isDestroyed, life }}
     >
       {children}
     </BatteryContext.Provider>

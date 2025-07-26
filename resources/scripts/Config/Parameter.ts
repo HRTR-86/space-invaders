@@ -23,3 +23,6 @@ export const BEAM_SLEEP_TIME = 15;
 
 // ミサイルが待機する時間
 export const MISSILE_SLEEP_TIME = 25;
+
+// 砲台のライフ
+export const LIFE_COUNT = 0;
