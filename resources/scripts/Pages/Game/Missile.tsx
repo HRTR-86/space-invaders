@@ -89,7 +89,7 @@ export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
     }
 
     return true;
-  }
+  };
 
   useEffect(() => {
     if (xCoordinate <= 0 || yCoordinate <= 0) {
@@ -108,7 +108,7 @@ export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
   }, [xCoordinate, yCoordinate]);
 
   return (
-    <Visible isOpen={isDisplay(xCoordinate, yCoordinate) }>
+    <Visible isOpen={isDisplay(xCoordinate, yCoordinate)}>
       <div
         style={{
           height: '15px',

@@ -66,9 +66,11 @@ export const BatteryProvider = ({ children }: IProps) => {
    * 砲台がミサイルに当たった場合の処理
    */
   const handleChangeAttacked = async () => {
+    if (isDestroyed) {
+      return;
+    }
+
     setIsDestroyed(true);
-    await sleep(2000);
-    setIsDestroyed(false);
     setLife((currentLife) => {
       if (currentLife === 0) {
         // TODO: imperativeを使用する形に修正する
@@ -78,6 +80,8 @@ export const BatteryProvider = ({ children }: IProps) => {
 
       return currentLife - 1;
     });
+    await sleep(1000);
+    setIsDestroyed(false);
   };
 
   useEffect(() => {

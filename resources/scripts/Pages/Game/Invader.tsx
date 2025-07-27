@@ -9,15 +9,19 @@ interface IProps extends IPropsBase {
 }
 
 export const Invader = ({ xCoordinate, yCoordinate, invader }: IProps) => {
+  /**
+   * インベーダーの画像のファイルパスを取得する
+   */
   const getFilePath = (invaderType: TInvaderType, yCoordinate: number): string => {
-    switch (invaderType) {
-      case EInvaderType.CRAB:
-        return `/images/invader1${yCoordinate % 2 === 0 ? '1' : '2'}.png`;
-      case EInvaderType.OCTOPUS:
-        return `/images/invader2${yCoordinate % 2 === 0 ? '1' : '2'}.png`;
-      default:
-        return '';
+    if (invaderType === EInvaderType.CRAB) {
+      return `/images/invader1${yCoordinate % 2 === 0 ? '1' : '2'}.png`;
     }
+
+    if (invaderType === EInvaderType.OCTOPUS) {
+      return `/images/invader2${yCoordinate % 2 === 0 ? '1' : '2'}.png`;
+    }
+
+    return '';
   };
 
   return (

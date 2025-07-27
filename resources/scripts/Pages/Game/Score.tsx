@@ -18,7 +18,7 @@ export const Score = (_: IProps) => {
         color: 'white',
       }}
     >
-      {`Score：${destroyedInvaderCount * 10} / ${life}`}
+      {`Score：${destroyedInvaderCount * 10}｜ ${life}`}
     </div>
   );
 };

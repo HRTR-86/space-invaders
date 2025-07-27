@@ -52,6 +52,17 @@ export const Battery = (_: IProps) => {
   };
 
   /**
+   * 砲台の画像のファイルパスを取得する
+   */
+  const getFilePath = (isDestroyed: boolean): string => {
+    if (isDestroyed) {
+      return '/images/battery2.gif';
+    }
+
+    return '/images/battery1.png';
+  };
+
+  /**
    * キーボードが押されたときの処理
    */
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -78,15 +89,17 @@ export const Battery = (_: IProps) => {
 
   return (
     <Visible isOpen={true}>
-      <div
+      <img
         style={{
-          height: '20px',
+          height: '28px',
           width: '40px',
           position: 'absolute',
-          top: `700px`,
+          top: '700px',
           left: `calc(${batteryCoordinate.x * 10}px - 20px)`,
-          backgroundColor: isDestroyed ? 'red' : 'white',
+          objectFit: 'cover',
         }}
+        alt={'battery'}
+        src={getFilePath(isDestroyed)}
       />
     </Visible>
   );

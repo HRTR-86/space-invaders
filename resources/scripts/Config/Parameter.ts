@@ -25,4 +25,4 @@ export const BEAM_SLEEP_TIME = 15;
 export const MISSILE_SLEEP_TIME = 25;
 
 // 砲台のライフ
-export const LIFE_COUNT = 0;
+export const LIFE_COUNT = 2;
