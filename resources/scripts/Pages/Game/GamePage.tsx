@@ -4,6 +4,7 @@ import { Beam } from '@/scripts/Pages/Game/Beam';
 import { Coordinate } from '@/scripts/Pages/Game/Coordinate';
 import { GameStatus } from '@/scripts/Pages/Game/GameStatus';
 import { Score } from '@/scripts/Pages/Game/Score';
+import { Ufo } from '@/scripts/Pages/Game/Ufo';
 import { Visible } from '@/scripts/Component/Visible';
 import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { EGameStatus } from '@/scripts/Enum/GameStatus';
@@ -24,6 +25,7 @@ export const GamePage = (_: IProps) => {
         <GameStatus />
       </Visible>
       <Visible isOpen={gameStatus === EGameStatus.PLAYING}>
+        <Ufo />
         <Coordinate />
         <Beam />
         <Battery />

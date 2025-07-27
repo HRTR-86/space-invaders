@@ -19,10 +19,22 @@ export const DEFAULT_INVADER_COUNT =
   DEFAULT_CRAB_INVADER_ROW_LIST.length * DEFAULT_INVADER_COLUMN_LIST.length;
 
 // ビームが待機する時間
-export const BEAM_SLEEP_TIME = 15;
+export const BEAM_SLEEP_TIME = 5;
 
 // ミサイルが待機する時間
 export const MISSILE_SLEEP_TIME = 25;
+
+// UFOが待機する時間
+export const UFO_SLEEP_TIME = 30;
+
+// UFOの初期位置
+export const DEFAULT_UFO_COORDINATE = {
+  X: 0,
+  Y: 2,
+};
+
+// UFOの出現間隔
+export const UFO_INTERVAL = 25000;
 
 // 砲台のライフ
 export const LIFE_COUNT = 2;

@@ -71,6 +71,7 @@ export const BatteryProvider = ({ children }: IProps) => {
     }
 
     setIsDestroyed(true);
+    await sleep(1000);
     setLife((currentLife) => {
       if (currentLife === 0) {
         // TODO: imperativeを使用する形に修正する
@@ -80,7 +81,6 @@ export const BatteryProvider = ({ children }: IProps) => {
 
       return currentLife - 1;
     });
-    await sleep(1000);
     setIsDestroyed(false);
   };
 

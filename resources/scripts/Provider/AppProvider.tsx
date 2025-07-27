@@ -4,6 +4,7 @@ import { BeamProvider } from '@/scripts/Provider/BeamProvider';
 import { GameStatusProvider } from '@/scripts/Provider/GamaStatusProvider';
 import { ImperativeProvider } from '@/scripts/Provider/ImperativeProvider';
 import { InvaderProvider } from '@/scripts/Provider/InvaderProvider';
+import { UfoProvider } from '@/scripts/Provider/UfoProvider';
 
 interface IProps extends IPropsBase {}
 
@@ -13,7 +14,9 @@ export const AppProvider = ({ children }: IProps) => {
       <ImperativeProvider>
         <BatteryProvider>
           <BeamProvider>
-            <InvaderProvider>{children}</InvaderProvider>
+            <UfoProvider>
+              <InvaderProvider>{children}</InvaderProvider>
+            </UfoProvider>
           </BeamProvider>
         </BatteryProvider>
       </ImperativeProvider>

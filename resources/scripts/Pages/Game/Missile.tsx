@@ -40,8 +40,8 @@ export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
         setMissileCoordinate((currentMissileCoordinate) => {
           const newMissileCoordinateY = currentMissileCoordinate.y + 1;
 
-          if (isExist(shotMissileCoordinateX, newMissileCoordinateY)) {
-            isAttacked = true;
+          if (newMissileCoordinateY > BOARD_HEIGHT) {
+            isFinished = true;
 
             // 初期地点にミサイルを戻す
             return {
@@ -50,9 +50,10 @@ export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
             };
           }
 
-          if (newMissileCoordinateY > BOARD_HEIGHT) {
-            isFinished = true;
+          if (isExist(shotMissileCoordinateX, newMissileCoordinateY)) {
+            isAttacked = true;
 
+            // 初期地点にミサイルを戻す
             return {
               x: shotMissileCoordinateX,
               y: shotMissileCoordinateY,

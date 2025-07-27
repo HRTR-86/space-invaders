@@ -56,9 +56,11 @@ export const InvaderProvider = ({ children }: IProps) => {
   const handleChangeAttacked = (x: number, y: number): void => {
     setInvaderTwoDimensionalList((currentInvaderList) => {
       const newInvaderList = [...currentInvaderList];
+      newInvaderList[y][x - 2] = EInvaderType.DEFAULT;
       newInvaderList[y][x - 1] = EInvaderType.DEFAULT;
       newInvaderList[y][x] = EInvaderType.DEFAULT;
       newInvaderList[y][x + 1] = EInvaderType.DEFAULT;
+      newInvaderList[y][x + 2] = EInvaderType.DEFAULT;
 
       return newInvaderList;
     });
@@ -78,8 +80,11 @@ export const InvaderProvider = ({ children }: IProps) => {
       return;
     }
 
-    const { x, y } = imperative.payload as Coordinate;
-    handleChangeAttacked(x, y);
+    const { coordinate, invaderType } = imperative.payload as {
+      coordinate: Coordinate;
+      invaderType: TInvaderType;
+    };
+    handleChangeAttacked(coordinate.x, coordinate.y);
   }, [imperative]);
 
   return (
