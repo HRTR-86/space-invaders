@@ -1,2 +1,8 @@
 // ベースのスタイル
 @use "base/reset";
+@use "base/fonts";
+
+@font-face {
+  font-family: 'space-invaders';
+  src: url('../assets/fonts/space_invaders.woff') format('truetype');
+}
