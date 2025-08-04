@@ -62,6 +62,20 @@ export const Coordinate = (_: IProps) => {
   };
 
   /**
+   * 移動後のインベーダーの種類を取得する
+   */
+  const getNextInvaderType = (currentInvaderType: TInvaderType): TInvaderType => {
+    if (
+      currentInvaderType === EInvaderType.OCTOPUS_DESTROYED ||
+      currentInvaderType === EInvaderType.CRAB_DESTROYED
+    ) {
+      return EInvaderType.DEFAULT;
+    }
+
+    return currentInvaderType;
+  };
+
+  /**
    * インベーダーを右に移動する
    */
   const moveInvaderToRight = (
@@ -75,18 +89,18 @@ export const Coordinate = (_: IProps) => {
       const currentInvaderType =
         yCoordinate - 1 < 0
           ? EInvaderType.DEFAULT
-          : targetInvaderList[yCoordinate - 1][xCoordinate];
+          : getNextInvaderType(targetInvaderList[yCoordinate - 1][xCoordinate]);
       if (currentInvaderType && isAtEdge(yCoordinate)) {
         // TODO: imperativeを使用する形に修正する
         setGameStatus(EGameStatus.GAME_OVER);
       }
 
-      return currentInvaderType;
+      return getNextInvaderType(currentInvaderType);
     }
 
     return xCoordinate - 1 < 0
       ? EInvaderType.DEFAULT
-      : targetInvaderList[yCoordinate][xCoordinate - 1];
+      : getNextInvaderType(targetInvaderList[yCoordinate][xCoordinate - 1]);
   };
 
   /**
@@ -103,18 +117,18 @@ export const Coordinate = (_: IProps) => {
       const currentInvaderType =
         yCoordinate - 1 < 0
           ? EInvaderType.DEFAULT
-          : targetInvaderList[yCoordinate - 1][xCoordinate];
+          : getNextInvaderType(targetInvaderList[yCoordinate - 1][xCoordinate]);
       if (currentInvaderType !== EInvaderType.DEFAULT && isAtEdge(yCoordinate)) {
         // TODO: imperativeを使用する形に修正する
         setGameStatus(EGameStatus.GAME_OVER);
       }
 
-      return currentInvaderType;
+      return getNextInvaderType(currentInvaderType);
     }
 
     return xCoordinate + 1 >= targetInvaderList[yCoordinate].length
       ? EInvaderType.DEFAULT
-      : targetInvaderList[yCoordinate][xCoordinate + 1];
+      : getNextInvaderType(targetInvaderList[yCoordinate][xCoordinate + 1]);
   };
 
   /**
@@ -213,13 +227,13 @@ export const Coordinate = (_: IProps) => {
     <>
       <MissileList />
       {invaderTwoDimensionalList.map((invaderList, yCoordinate) => {
-        return invaderList.map((invader, xCoordinate) => {
+        return invaderList.map((invaderType, xCoordinate) => {
           return (
             <Invader
               key={`${yCoordinate}-${xCoordinate}`}
               xCoordinate={yCoordinate}
               yCoordinate={xCoordinate}
-              invader={invader}
+              invaderType={invaderType}
             />
           );
         });

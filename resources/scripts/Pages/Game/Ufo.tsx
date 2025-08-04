@@ -15,7 +15,8 @@ interface IProps extends IPropsBase {}
 
 export const Ufo = (_: IProps) => {
   const { destroyedInvaderCount } = useInvaderContext();
-  const { ufoCoordinate, setUfoCoordinate, isMovingRef, handleChangeIsMoving } = useUfoContext();
+  const { ufoCoordinate, setUfoCoordinate, isDestroyed, isMovingRef, handleChangeIsMoving } =
+    useUfoContext();
 
   let destroyedInvaderCountRef = useRef(destroyedInvaderCount);
   destroyedInvaderCountRef.current = destroyedInvaderCount;
@@ -73,6 +74,17 @@ export const Ufo = (_: IProps) => {
     });
   };
 
+  /**
+   * UFOの画像のファイルパスを取得する
+   */
+  const getFilePath = (isDestroyed: boolean): string => {
+    if (isDestroyed) {
+      return '/images/ufo2.png';
+    }
+
+    return '/images/ufo1.png';
+  };
+
   useEffect(() => {
     startInterval();
   }, []);
@@ -89,7 +101,7 @@ export const Ufo = (_: IProps) => {
           objectFit: 'cover',
         }}
         alt={'ufo'}
-        src={'/images/ufo.png'}
+        src={getFilePath(isDestroyed)}
       />
     </Visible>
   );

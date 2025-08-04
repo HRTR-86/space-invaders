@@ -5,10 +5,10 @@ import { EInvaderType, TInvaderType } from '@/scripts/Enum/InvaderType';
 interface IProps extends IPropsBase {
   xCoordinate: number;
   yCoordinate: number;
-  invader: TInvaderType;
+  invaderType: TInvaderType;
 }
 
-export const Invader = ({ xCoordinate, yCoordinate, invader }: IProps) => {
+export const Invader = ({ xCoordinate, yCoordinate, invaderType }: IProps) => {
   /**
    * インベーダーの画像のファイルパスを取得する
    */
@@ -17,15 +17,23 @@ export const Invader = ({ xCoordinate, yCoordinate, invader }: IProps) => {
       return `/images/invader1${yCoordinate % 2 === 0 ? '1' : '2'}.png`;
     }
 
+    if (invaderType === EInvaderType.CRAB_DESTROYED) {
+      return '/images/invader13.png';
+    }
+
     if (invaderType === EInvaderType.OCTOPUS) {
       return `/images/invader2${yCoordinate % 2 === 0 ? '1' : '2'}.png`;
+    }
+
+    if (invaderType === EInvaderType.OCTOPUS_DESTROYED) {
+      return '/images/invader23.png';
     }
 
     return '';
   };
 
   return (
-    <Visible isOpen={invader !== EInvaderType.DEFAULT}>
+    <Visible isOpen={invaderType !== EInvaderType.DEFAULT}>
       <img
         style={{
           height: '32px',
@@ -36,7 +44,7 @@ export const Invader = ({ xCoordinate, yCoordinate, invader }: IProps) => {
           objectFit: 'cover',
         }}
         alt={'invader'}
-        src={getFilePath(invader, yCoordinate)}
+        src={getFilePath(invaderType, yCoordinate)}
       />
     </Visible>
   );

@@ -8,10 +8,11 @@ import {
   useRef,
   useState,
 } from 'react';
-import { IPropsBase } from '@/scripts/Common/System';
+import { IPropsBase, sleep } from '@/scripts/Common/System';
 import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
 import { EImperative } from '@/scripts/Enum/Imperative';
 import { DEFAULT_UFO_COORDINATE } from '@/scripts/Config/Parameter';
+import { EGameStatus } from '@/scripts/Enum/GameStatus';
 
 interface Coordinate {
   x: number;
@@ -21,6 +22,7 @@ interface Coordinate {
 interface UfoContext {
   ufoCoordinate: Coordinate;
   setUfoCoordinate: Dispatch<SetStateAction<Coordinate>>;
+  isDestroyed: boolean;
   isExist: (x: number, y: number) => boolean;
   isMovingRef: RefObject<boolean>;
   handleChangeIsMoving: (isMoving: boolean) => void;
@@ -34,6 +36,7 @@ const UfoContext = createContext<UfoContext>({
     y: DEFAULT_UFO_COORDINATE.Y,
   },
   setUfoCoordinate: () => {},
+  isDestroyed: false,
   isExist: () => false,
   isMovingRef: { current: false },
   handleChangeIsMoving: () => {},
@@ -46,6 +49,7 @@ export const UfoProvider = ({ children }: IProps) => {
     x: DEFAULT_UFO_COORDINATE.X,
     y: DEFAULT_UFO_COORDINATE.Y,
   });
+  const [isDestroyed, setIsDestroyed] = useState<boolean>(false);
 
   const isMovingRef = useRef<boolean>(false);
   const ufoCoordinateRef = useRef<Coordinate>(ufoCoordinate);
@@ -73,10 +77,17 @@ export const UfoProvider = ({ children }: IProps) => {
    * 砲台がミサイルに当たった場合の処理
    */
   const handleChangeAttacked = async () => {
+    if (isDestroyed) {
+      return;
+    }
+
+    setIsDestroyed(true);
+    await sleep(800);
     setUfoCoordinate({
       x: DEFAULT_UFO_COORDINATE.X,
       y: DEFAULT_UFO_COORDINATE.Y,
     });
+    setIsDestroyed(false);
   };
 
   useEffect(() => {
@@ -91,7 +102,14 @@ export const UfoProvider = ({ children }: IProps) => {
 
   return (
     <UfoContext.Provider
-      value={{ ufoCoordinate, setUfoCoordinate, isExist, isMovingRef, handleChangeIsMoving }}
+      value={{
+        ufoCoordinate,
+        setUfoCoordinate,
+        isDestroyed,
+        isExist,
+        isMovingRef,
+        handleChangeIsMoving,
+      }}
     >
       {children}
     </UfoContext.Provider>

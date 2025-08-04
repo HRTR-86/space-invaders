@@ -41,13 +41,32 @@ export const InvaderProvider = ({ children }: IProps) => {
    * インベーダーが存在するかどうかを確認する
    */
   const isExist = (x: number, y: number): boolean => {
-    return (
-      invaderTwoDimensionalList[y][x - 2] !== EInvaderType.DEFAULT ||
-      invaderTwoDimensionalList[y][x - 1] !== EInvaderType.DEFAULT ||
-      invaderTwoDimensionalList[y][x] !== EInvaderType.DEFAULT ||
-      invaderTwoDimensionalList[y][x + 1] !== EInvaderType.DEFAULT ||
-      invaderTwoDimensionalList[y][x + 2] !== EInvaderType.DEFAULT
-    );
+    let index = -2;
+    while (index <= 2) {
+      const invaderType = invaderTwoDimensionalList[y][x + index];
+      if (invaderType === EInvaderType.OCTOPUS || invaderType === EInvaderType.CRAB) {
+        return true;
+      }
+
+      index++;
+    }
+
+    return false;
+  };
+
+  /**
+   * インベーダーのタイプを更新する
+   */
+  const updateInvaderType = (currentInvaderType: TInvaderType): TInvaderType => {
+    if (currentInvaderType === EInvaderType.CRAB) {
+      return EInvaderType.CRAB_DESTROYED;
+    }
+
+    if (currentInvaderType === EInvaderType.OCTOPUS) {
+      return EInvaderType.OCTOPUS_DESTROYED;
+    }
+
+    return currentInvaderType;
   };
 
   /**
@@ -56,11 +75,11 @@ export const InvaderProvider = ({ children }: IProps) => {
   const handleChangeAttacked = (x: number, y: number): void => {
     setInvaderTwoDimensionalList((currentInvaderList) => {
       const newInvaderList = [...currentInvaderList];
-      newInvaderList[y][x - 2] = EInvaderType.DEFAULT;
-      newInvaderList[y][x - 1] = EInvaderType.DEFAULT;
-      newInvaderList[y][x] = EInvaderType.DEFAULT;
-      newInvaderList[y][x + 1] = EInvaderType.DEFAULT;
-      newInvaderList[y][x + 2] = EInvaderType.DEFAULT;
+      newInvaderList[y][x - 2] = updateInvaderType(newInvaderList[y][x - 2]);
+      newInvaderList[y][x - 1] = updateInvaderType(newInvaderList[y][x - 1]);
+      newInvaderList[y][x] = updateInvaderType(newInvaderList[y][x]);
+      newInvaderList[y][x + 1] = updateInvaderType(newInvaderList[y][x + 1]);
+      newInvaderList[y][x + 2] = updateInvaderType(newInvaderList[y][x + 2]);
 
       return newInvaderList;
     });
