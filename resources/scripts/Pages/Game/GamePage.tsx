@@ -8,6 +8,7 @@ import { Ufo } from '@/scripts/Pages/Game/Ufo';
 import { Visible } from '@/scripts/Component/Visible';
 import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { EGameStatus } from '@/scripts/Enum/GameStatus';
+import { BOARD_HEIGHT, BOARD_WIDTH } from '@/scripts/Config/Parameter';
 
 interface IProps extends IPropsBase {}
 
@@ -19,17 +20,27 @@ export const GamePage = (_: IProps) => {
       style={{
         height: '100vh',
         backgroundColor: 'black',
+        display: 'flex',
+        justifyContent: 'center',
       }}
     >
       <Visible isOpen={gameStatus !== EGameStatus.PLAYING}>
         <GameStatus />
       </Visible>
       <Visible isOpen={gameStatus === EGameStatus.PLAYING}>
-        <Ufo />
-        <Coordinate />
-        <Beam />
-        <Battery />
         <Score />
+        <div
+          style={{
+            height: `${BOARD_HEIGHT * 10}px`,
+            width: `${BOARD_WIDTH * 10}px`,
+            position: 'relative',
+          }}
+        >
+          <Ufo />
+          <Coordinate />
+          <Beam />
+          <Battery />
+        </div>
       </Visible>
     </div>
   );

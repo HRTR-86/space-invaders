@@ -9,8 +9,8 @@ export const BOARD_HEIGHT = 70;
 export const BOARD_WIDTH = 97;
 
 // インベーダーの初期位置
-export const DEFAULT_OCTOPUS_INVADER_ROW_LIST = [7, 11];
-export const DEFAULT_CRAB_INVADER_ROW_LIST = [15, 19];
+export const DEFAULT_OCTOPUS_INVADER_ROW_LIST = [11, 15];
+export const DEFAULT_CRAB_INVADER_ROW_LIST = [19, 23];
 export const DEFAULT_INVADER_COLUMN_LIST = [12, 18, 24, 30, 36, 42, 48, 54, 60, 66];
 
 // インベーダーの数
@@ -30,7 +30,7 @@ export const UFO_SLEEP_TIME = 30;
 // UFOの初期位置
 export const DEFAULT_UFO_COORDINATE = {
   X: 0,
-  Y: 2,
+  Y: 7,
 };
 
 // UFOの出現間隔

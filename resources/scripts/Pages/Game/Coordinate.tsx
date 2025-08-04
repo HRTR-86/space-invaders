@@ -210,7 +210,7 @@ export const Coordinate = (_: IProps) => {
   }, []);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <>
       <MissileList />
       {invaderTwoDimensionalList.map((invaderList, yCoordinate) => {
         return invaderList.map((invader, xCoordinate) => {
@@ -224,6 +224,6 @@ export const Coordinate = (_: IProps) => {
           );
         });
       })}
-    </div>
+    </>
   );
 };
