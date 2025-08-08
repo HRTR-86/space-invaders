@@ -3,7 +3,6 @@ import { IPropsBase, sleep } from '@/scripts/Common/System';
 import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
 import { Invader } from '@/scripts/Pages/Game/Invader';
-import { MissileList } from '@/scripts/Pages/Game/MissileList';
 import { EDirection, TDirection } from '@/scripts/Enum/Direction';
 import { EGameStatus } from '@/scripts/Enum/GameStatus';
 import { EInvaderType, TInvaderType } from '@/scripts/Enum/InvaderType';
@@ -225,7 +224,6 @@ export const Coordinate = (_: IProps) => {
 
   return (
     <>
-      <MissileList />
       {invaderTwoDimensionalList.map((invaderList, yCoordinate) => {
         return invaderList.map((invaderType, xCoordinate) => {
           return (

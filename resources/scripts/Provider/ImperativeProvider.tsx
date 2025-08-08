@@ -15,6 +15,8 @@ interface Imperative {
 interface ImperativeContext {
   imperative: Imperative;
   setImperative: Dispatch<SetStateAction<Imperative>>;
+  imperativeList: Imperative[];
+  handleAddImperative: (imperative: Imperative) => void;
 }
 
 interface IProps extends IPropsBase {}
@@ -22,13 +24,22 @@ interface IProps extends IPropsBase {}
 const ImperativeContext = createContext<ImperativeContext>({
   imperative: { ...initialImperative },
   setImperative: () => {},
+  imperativeList: [],
+  handleAddImperative: () => {},
 });
 
 export const ImperativeProvider = ({ children }: IProps) => {
   const [imperative, setImperative] = useState<Imperative>({ ...initialImperative });
+  const [imperativeList, setImperativeList] = useState<Imperative[]>([]);
+
+  const handleAddImperative = (newImperative: Imperative) => {
+    setImperativeList((currentImperativeList) => [...currentImperativeList, newImperative]);
+  };
 
   return (
-    <ImperativeContext.Provider value={{ imperative, setImperative }}>
+    <ImperativeContext.Provider
+      value={{ imperative, setImperative, imperativeList, handleAddImperative }}
+    >
       {children}
     </ImperativeContext.Provider>
   );

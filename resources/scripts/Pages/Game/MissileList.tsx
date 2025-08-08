@@ -2,12 +2,13 @@ import { ReactNode, useEffect, useState } from 'react';
 import { IPropsBase } from '@/scripts/Common/System';
 import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
 import { Missile } from '@/scripts/Pages/Game/Missile';
+import { EInvaderType } from '@/scripts/Enum/InvaderType';
 import { BOARD_HEIGHT, BOARD_WIDTH } from '@/scripts/Config/Parameter';
 
 interface IProps extends IPropsBase {}
 
 export const MissileList = (_: IProps) => {
-  const { invaderTwoDimensionalList, isExist } = useInvaderContext();
+  const { invaderTwoDimensionalList, getExistInvaderType } = useInvaderContext();
 
   const [missileCoordinateList, setMissileCoordinateList] = useState<ReactNode[]>([]);
 
@@ -28,7 +29,7 @@ export const MissileList = (_: IProps) => {
       const randomXCoordinate = Math.floor(Math.random() * (BOARD_WIDTH - 24)) + 12;
       const randomYCoordinate = Math.floor(Math.random() * (BOARD_HEIGHT - 7)) + 7;
 
-      if (!isExist(randomXCoordinate, randomYCoordinate)) {
+      if (getExistInvaderType(randomXCoordinate, randomYCoordinate) === EInvaderType.DEFAULT) {
         continue;
       }
 

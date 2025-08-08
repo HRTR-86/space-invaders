@@ -14,11 +14,11 @@ import { BEAM_SLEEP_TIME, BOARD_HEIGHT } from '@/scripts/Config/Parameter';
 interface IProps extends IPropsBase {}
 
 export const Beam = (_: IProps) => {
-  const { invaderTwoDimensionalList, isExist: isExistInvader } = useInvaderContext();
+  const { invaderTwoDimensionalList, getExistInvaderType } = useInvaderContext();
   const { isExist: isExistUfo } = useUfoContext();
-  const { batteryCoordinate } = useBatteryContext();
+  const { batteryCoordinate, isDestroyed } = useBatteryContext();
   const { beamCoordinate, setBeamCoordinate } = useBeamContext();
-  const { setImperative } = useImperativeContext();
+  const { setImperative, handleAddImperative } = useImperativeContext();
 
   const isAttackingRef = useRef<boolean>(false);
 
@@ -47,9 +47,9 @@ export const Beam = (_: IProps) => {
             };
           }
 
-          if (isExistInvader(shotBeamCoordinateX, newBeamCoordinateY)) {
+          invaderType = getExistInvaderType(shotBeamCoordinateX, newBeamCoordinateY);
+          if (invaderType !== EInvaderType.DEFAULT) {
             hitCoordinate = { x: shotBeamCoordinateX, y: newBeamCoordinateY };
-            invaderType = EInvaderType.CRAB;
             isAttacked = true;
             isAttackingRef.current = false;
 
@@ -100,7 +100,7 @@ export const Beam = (_: IProps) => {
    * キーボードが押されたときの処理
    */
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.code === EKeyCode.SPACE && !isAttackingRef.current) {
+    if (event.code === EKeyCode.SPACE && !isAttackingRef.current && !isDestroyed) {
       shotBeam().then(({ coordinate, invaderType }) => {
         if (coordinate.x === 0 && coordinate.y === 0) {
           return;
@@ -113,7 +113,7 @@ export const Beam = (_: IProps) => {
           return;
         }
 
-        setImperative({
+        handleAddImperative({
           message: EImperative.BEAM_HIT_INVADER,
           payload: {
             coordinate: coordinate,

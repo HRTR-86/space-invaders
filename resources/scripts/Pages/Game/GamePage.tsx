@@ -3,6 +3,7 @@ import { Battery } from '@/scripts/Pages/Game/Battery';
 import { Beam } from '@/scripts/Pages/Game/Beam';
 import { Coordinate } from '@/scripts/Pages/Game/Coordinate';
 import { GameStatus } from '@/scripts/Pages/Game/GameStatus';
+import { MissileList } from '@/scripts/Pages/Game/MissileList';
 import { Score } from '@/scripts/Pages/Game/Score';
 import { Ufo } from '@/scripts/Pages/Game/Ufo';
 import { Visible } from '@/scripts/Component/Visible';
@@ -34,9 +35,11 @@ export const GamePage = (_: IProps) => {
             height: `${BOARD_HEIGHT * 10}px`,
             width: `${BOARD_WIDTH * 10}px`,
             position: 'relative',
+            overflow: 'hidden',
           }}
         >
           <Ufo />
+          <MissileList />
           <Coordinate />
           <Beam />
           <Battery />

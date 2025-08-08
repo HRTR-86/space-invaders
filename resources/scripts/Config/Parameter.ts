@@ -19,7 +19,7 @@ export const DEFAULT_INVADER_COUNT =
   DEFAULT_CRAB_INVADER_ROW_LIST.length * DEFAULT_INVADER_COLUMN_LIST.length;
 
 // ビームが待機する時間
-export const BEAM_SLEEP_TIME = 5;
+export const BEAM_SLEEP_TIME = 10;
 
 // ミサイルが待機する時間
 export const MISSILE_SLEEP_TIME = 25;

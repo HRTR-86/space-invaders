@@ -1,11 +1,11 @@
 import { IPropsBase } from '@/scripts/Common/System';
 import { useBatteryContext } from '@/scripts/Provider/BatteryProvider';
-import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
+import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 
 interface IProps extends IPropsBase {}
 
 export const Score = (_: IProps) => {
-  const { destroyedInvaderCount } = useInvaderContext();
+  const { score } = useGameStatusContext();
   const { life } = useBatteryContext();
 
   return (
@@ -24,7 +24,7 @@ export const Score = (_: IProps) => {
           color: 'white',
         }}
       >
-        {`Score：${destroyedInvaderCount * 10}`}
+        {`SCORE：${score}`}
       </div>
       <div
         style={{

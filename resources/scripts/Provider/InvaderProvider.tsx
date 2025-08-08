@@ -15,7 +15,7 @@ interface Coordinate {
 interface InvaderContext {
   invaderTwoDimensionalList: TInvaderType[][];
   setInvaderTwoDimensionalList: Dispatch<SetStateAction<TInvaderType[][]>>;
-  isExist: (x: number, y: number) => boolean;
+  getExistInvaderType: (x: number, y: number) => TInvaderType;
   handleChangeAttacked: (x: number, y: number) => void;
   destroyedInvaderCount: number;
 }
@@ -25,14 +25,14 @@ interface IProps extends IPropsBase {}
 const InvaderContext = createContext<InvaderContext>({
   invaderTwoDimensionalList: [[]],
   setInvaderTwoDimensionalList: () => {},
-  isExist: () => false,
+  getExistInvaderType: () => EInvaderType.DEFAULT,
   handleChangeAttacked: () => {},
   destroyedInvaderCount: 0,
 });
 
 export const InvaderProvider = ({ children }: IProps) => {
-  const { imperative } = useImperativeContext();
-  const { setGameStatus } = useGameStatusContext();
+  const { imperativeList } = useImperativeContext();
+  const { setGameStatus, handleAddScore } = useGameStatusContext();
 
   const [invaderTwoDimensionalList, setInvaderTwoDimensionalList] = useState<TInvaderType[][]>([]);
   const [destroyedInvaderCount, setDestroyedInvaderCount] = useState<number>(0);
@@ -40,18 +40,22 @@ export const InvaderProvider = ({ children }: IProps) => {
   /**
    * インベーダーが存在するかどうかを確認する
    */
-  const isExist = (x: number, y: number): boolean => {
+  const getExistInvaderType = (x: number, y: number): TInvaderType => {
     let index = -2;
     while (index <= 2) {
       const invaderType = invaderTwoDimensionalList[y][x + index];
-      if (invaderType === EInvaderType.OCTOPUS || invaderType === EInvaderType.CRAB) {
-        return true;
+      if (invaderType === EInvaderType.OCTOPUS) {
+        return EInvaderType.OCTOPUS;
+      }
+
+      if (invaderType === EInvaderType.CRAB) {
+        return EInvaderType.CRAB;
       }
 
       index++;
     }
 
-    return false;
+    return EInvaderType.DEFAULT;
   };
 
   /**
@@ -95,23 +99,26 @@ export const InvaderProvider = ({ children }: IProps) => {
   }, [destroyedInvaderCount]);
 
   useEffect(() => {
-    if (imperative.message !== EImperative.BEAM_HIT_INVADER) {
+    const lastImperative = imperativeList.at(-1);
+    if (lastImperative === undefined || lastImperative.message !== EImperative.BEAM_HIT_INVADER) {
       return;
     }
 
-    const { coordinate, invaderType } = imperative.payload as {
+    const { coordinate, invaderType } = lastImperative.payload as {
       coordinate: Coordinate;
       invaderType: TInvaderType;
     };
+
     handleChangeAttacked(coordinate.x, coordinate.y);
-  }, [imperative]);
+    handleAddScore(invaderType);
+  }, [imperativeList]);
 
   return (
     <InvaderContext.Provider
       value={{
         invaderTwoDimensionalList,
         setInvaderTwoDimensionalList,
-        isExist,
+        getExistInvaderType,
         handleChangeAttacked,
         destroyedInvaderCount,
       }}

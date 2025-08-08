@@ -94,7 +94,7 @@ export const Battery = (_: IProps) => {
           height: '28px',
           width: '40px',
           position: 'absolute',
-          top: '700px',
+          top: `calc(${batteryCoordinate.y * 10}px - 28px)`,
           left: `calc(${batteryCoordinate.x * 10}px - 20px)`,
           objectFit: 'cover',
         }}

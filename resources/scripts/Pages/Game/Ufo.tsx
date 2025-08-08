@@ -48,7 +48,7 @@ export const Ufo = (_: IProps) => {
         setUfoCoordinate((currentUfoCoordinate) => {
           const newUfoCoordinateX = currentUfoCoordinate.x + 1;
 
-          if (newUfoCoordinateX > BOARD_WIDTH) {
+          if (newUfoCoordinateX >= BOARD_WIDTH) {
             isFinished = true;
 
             return {
