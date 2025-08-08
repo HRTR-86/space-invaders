@@ -10,8 +10,8 @@ interface IProps extends IPropsBase {}
 
 export const AppProvider = ({ children }: IProps) => {
   return (
-    <GameStatusProvider>
-      <ImperativeProvider>
+    <ImperativeProvider>
+      <GameStatusProvider>
         <BatteryProvider>
           <BeamProvider>
             <UfoProvider>
@@ -19,7 +19,7 @@ export const AppProvider = ({ children }: IProps) => {
             </UfoProvider>
           </BeamProvider>
         </BatteryProvider>
-      </ImperativeProvider>
-    </GameStatusProvider>
+      </GameStatusProvider>
+    </ImperativeProvider>
   );
 };

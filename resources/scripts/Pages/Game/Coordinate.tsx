@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { IPropsBase, sleep } from '@/scripts/Common/System';
-import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
+import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
 import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
 import { Invader } from '@/scripts/Pages/Game/Invader';
 import { EDirection, TDirection } from '@/scripts/Enum/Direction';
-import { EGameStatus } from '@/scripts/Enum/GameStatus';
+import { EImperative } from '@/scripts/Enum/Imperative';
 import { EInvaderType, TInvaderType } from '@/scripts/Enum/InvaderType';
 import {
   BOARD_HEIGHT,
@@ -20,7 +20,7 @@ import {
 interface IProps extends IPropsBase {}
 
 export const Coordinate = (_: IProps) => {
-  const { setGameStatus } = useGameStatusContext();
+  const { handleAddImperative } = useImperativeContext();
   const { invaderTwoDimensionalList, setInvaderTwoDimensionalList, destroyedInvaderCount } =
     useInvaderContext();
 
@@ -57,7 +57,7 @@ export const Coordinate = (_: IProps) => {
    * インベーダーが端に到達したかどうかを確認する
    */
   const isAtEdge = (yCoordinate: number): boolean => {
-    return yCoordinate === BOARD_HEIGHT - 1;
+    return yCoordinate >= BOARD_HEIGHT - 1;
   };
 
   /**
@@ -89,9 +89,10 @@ export const Coordinate = (_: IProps) => {
         yCoordinate - 1 < 0
           ? EInvaderType.DEFAULT
           : getNextInvaderType(targetInvaderList[yCoordinate - 1][xCoordinate]);
-      if (currentInvaderType && isAtEdge(yCoordinate)) {
-        // TODO: imperativeを使用する形に修正する
-        setGameStatus(EGameStatus.GAME_OVER);
+      if (currentInvaderType !== EInvaderType.DEFAULT && isAtEdge(yCoordinate)) {
+        handleAddImperative({
+          message: EImperative.INVADER_REACHED_EDGE,
+        });
       }
 
       return getNextInvaderType(currentInvaderType);
@@ -118,8 +119,9 @@ export const Coordinate = (_: IProps) => {
           ? EInvaderType.DEFAULT
           : getNextInvaderType(targetInvaderList[yCoordinate - 1][xCoordinate]);
       if (currentInvaderType !== EInvaderType.DEFAULT && isAtEdge(yCoordinate)) {
-        // TODO: imperativeを使用する形に修正する
-        setGameStatus(EGameStatus.GAME_OVER);
+        handleAddImperative({
+          message: EImperative.INVADER_REACHED_EDGE,
+        });
       }
 
       return getNextInvaderType(currentInvaderType);

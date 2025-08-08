@@ -19,7 +19,7 @@ interface IProps extends IPropsBase {
 
 export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
   const { isExist } = useBatteryContext();
-  const { setImperative } = useImperativeContext();
+  const { handleAddImperative } = useImperativeContext();
 
   const [missileCoordinate, setMissileCoordinate] = useState<Coordinate>({ x: 0, y: 0 });
 
@@ -99,7 +99,7 @@ export const Missile = ({ xCoordinate, yCoordinate, onFinished }: IProps) => {
 
     shotMissile(xCoordinate, yCoordinate).then((isAttacked) => {
       if (isAttacked) {
-        setImperative({
+        handleAddImperative({
           message: EImperative.MISSILE_HIT_BATTERY,
         });
       }

@@ -6,19 +6,19 @@ import { Coordinate, useBeamContext } from '@/scripts/Provider/BeamProvider';
 import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
 import { useInvaderContext } from '@/scripts/Provider/InvaderProvider';
 import { useUfoContext } from '@/scripts/Provider/UfoProvider';
-import { EKeyCode } from '@/scripts/Enum/KeyCode';
 import { EImperative } from '@/scripts/Enum/Imperative';
 import { EInvaderType, TInvaderType } from '@/scripts/Enum/InvaderType';
+import { EKeyCode } from '@/scripts/Enum/KeyCode';
 import { BEAM_SLEEP_TIME, BOARD_HEIGHT } from '@/scripts/Config/Parameter';
 
 interface IProps extends IPropsBase {}
 
 export const Beam = (_: IProps) => {
+  const { handleAddImperative } = useImperativeContext();
   const { invaderTwoDimensionalList, getExistInvaderType } = useInvaderContext();
   const { isExist: isExistUfo, pointRef } = useUfoContext();
   const { batteryCoordinate, isDestroyed } = useBatteryContext();
   const { beamCoordinate, setBeamCoordinate } = useBeamContext();
-  const { setImperative, handleAddImperative } = useImperativeContext();
 
   const isAttackingRef = useRef<boolean>(false);
 
@@ -107,7 +107,7 @@ export const Beam = (_: IProps) => {
         }
 
         if (invaderType === EInvaderType.UFO) {
-          setImperative({
+          handleAddImperative({
             message: EImperative.BEAM_HIT_UFO,
             payload: {
               point: pointRef.current,

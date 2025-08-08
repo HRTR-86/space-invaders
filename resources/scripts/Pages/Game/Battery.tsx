@@ -16,7 +16,7 @@ export const Battery = (_: IProps) => {
   /**
    * 砲台を右に移動する
    */
-  const moveBatteryToRight = (currentBatteryCoordinate: { x: number; y: number }) => {
+  const moveBatteryToRight = () => {
     setBatteryCoordinate((currentBatteryCoordinate) => {
       if (currentBatteryCoordinate.x >= BOARD_WIDTH - 1) {
         return {
@@ -35,7 +35,7 @@ export const Battery = (_: IProps) => {
   /**
    * 砲台を左に移動する
    */
-  const moveBatteryToLeft = (currentBatteryCoordinate: { x: number; y: number }) => {
+  const moveBatteryToLeft = () => {
     setBatteryCoordinate((currentBatteryXCoordinate) => {
       if (currentBatteryXCoordinate.x <= 0) {
         return {
@@ -71,11 +71,11 @@ export const Battery = (_: IProps) => {
     }
 
     if (event.code === EKeyCode.ARROW_RIGHT) {
-      moveBatteryToRight(batteryCoordinate);
+      moveBatteryToRight();
     }
 
     if (event.code === EKeyCode.ARROW_LEFT) {
-      moveBatteryToLeft(batteryCoordinate);
+      moveBatteryToLeft();
     }
   };
 

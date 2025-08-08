@@ -3,7 +3,6 @@ import { IPropsBase } from '@/scripts/Common/System';
 import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
 import { EImperative } from '@/scripts/Enum/Imperative';
-import { EGameStatus } from '@/scripts/Enum/GameStatus';
 import { EInvaderType, TInvaderType } from '@/scripts/Enum/InvaderType';
 import { DEFAULT_INVADER_COUNT } from '@/scripts/Config/Parameter';
 
@@ -31,8 +30,8 @@ const InvaderContext = createContext<InvaderContext>({
 });
 
 export const InvaderProvider = ({ children }: IProps) => {
-  const { imperativeList } = useImperativeContext();
-  const { setGameStatus, handleAddScore } = useGameStatusContext();
+  const { imperativeList, handleAddImperative } = useImperativeContext();
+  const { handleAddScore } = useGameStatusContext();
 
   const [invaderTwoDimensionalList, setInvaderTwoDimensionalList] = useState<TInvaderType[][]>([]);
   const [destroyedInvaderCount, setDestroyedInvaderCount] = useState<number>(0);
@@ -93,24 +92,27 @@ export const InvaderProvider = ({ children }: IProps) => {
 
   useEffect(() => {
     if (destroyedInvaderCount === DEFAULT_INVADER_COUNT) {
-      // TODO: imperativeを使用する形に修正する
-      setGameStatus(EGameStatus.GAME_CLEAR);
+      handleAddImperative({
+        message: EImperative.ALL_INVADER_DESTROYED,
+      });
     }
   }, [destroyedInvaderCount]);
 
   useEffect(() => {
     const lastImperative = imperativeList.at(-1);
-    if (lastImperative === undefined || lastImperative.message !== EImperative.BEAM_HIT_INVADER) {
+    if (lastImperative === undefined) {
       return;
     }
 
-    const { coordinate, invaderType } = lastImperative.payload as {
-      coordinate: Coordinate;
-      invaderType: TInvaderType;
-    };
+    if (lastImperative.message === EImperative.BEAM_HIT_INVADER) {
+      const { coordinate, invaderType } = lastImperative.payload as {
+        coordinate: Coordinate;
+        invaderType: TInvaderType;
+      };
 
-    handleChangeAttacked(coordinate.x, coordinate.y);
-    handleAddScore(invaderType);
+      handleChangeAttacked(coordinate.x, coordinate.y);
+      handleAddScore(invaderType);
+    }
   }, [imperativeList]);
 
   return (

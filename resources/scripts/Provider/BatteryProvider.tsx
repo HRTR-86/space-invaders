@@ -8,9 +8,7 @@ import {
   useState,
 } from 'react';
 import { IPropsBase, sleep } from '@/scripts/Common/System';
-import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
-import { EGameStatus } from '@/scripts/Enum/GameStatus';
 import { EImperative } from '@/scripts/Enum/Imperative';
 import { BOARD_HEIGHT, BOARD_WIDTH, LIFE_COUNT } from '@/scripts/Config/Parameter';
 
@@ -38,8 +36,7 @@ const BatteryContext = createContext<BatteryContext>({
 });
 
 export const BatteryProvider = ({ children }: IProps) => {
-  const { imperative } = useImperativeContext();
-  const { setGameStatus } = useGameStatusContext();
+  const { imperativeList, handleAddImperative } = useImperativeContext();
 
   const [batteryCoordinate, setBatteryCoordinate] = useState<Coordinate>({
     x: Math.round(BOARD_WIDTH / 2),
@@ -74,8 +71,9 @@ export const BatteryProvider = ({ children }: IProps) => {
     await sleep(1000);
     setLife((currentLife) => {
       if (currentLife === 0) {
-        // TODO: imperativeを使用する形に修正する
-        setGameStatus(EGameStatus.GAME_OVER);
+        handleAddImperative({
+          message: EImperative.ALL_BATTERY_DESTROYED,
+        });
         return 0;
       }
 
@@ -85,12 +83,15 @@ export const BatteryProvider = ({ children }: IProps) => {
   };
 
   useEffect(() => {
-    if (imperative.message !== EImperative.MISSILE_HIT_BATTERY) {
+    const lastImperative = imperativeList.at(-1);
+    if (lastImperative === undefined) {
       return;
     }
 
-    handleChangeAttacked();
-  }, [imperative]);
+    if (lastImperative.message === EImperative.MISSILE_HIT_BATTERY) {
+      handleChangeAttacked();
+    }
+  }, [imperativeList]);
 
   return (
     <BatteryContext.Provider

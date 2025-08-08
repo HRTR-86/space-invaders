@@ -48,7 +48,7 @@ const UfoContext = createContext<UfoContext>({
 });
 
 export const UfoProvider = ({ children }: IProps) => {
-  const { imperative } = useImperativeContext();
+  const { imperativeList } = useImperativeContext();
   const { handleAddScore } = useGameStatusContext();
 
   const [ufoCoordinate, setUfoCoordinate] = useState<Coordinate>({
@@ -121,18 +121,21 @@ export const UfoProvider = ({ children }: IProps) => {
   };
 
   useEffect(() => {
-    if (imperative.message !== EImperative.BEAM_HIT_UFO) {
+    const lastImperative = imperativeList.at(-1);
+    if (lastImperative === undefined) {
       return;
     }
 
-    const { point } = imperative.payload as {
-      point: number;
-    };
+    if (lastImperative.message === EImperative.BEAM_HIT_UFO) {
+      const { point } = lastImperative.payload as {
+        point: number;
+      };
 
-    handleChangeIsMoving(false);
-    handleChangeAttacked();
-    handleAddScore(EInvaderType.UFO, point);
-  }, [imperative]);
+      handleChangeIsMoving(false);
+      handleChangeAttacked();
+      handleAddScore(EInvaderType.UFO, point);
+    }
+  }, [imperativeList]);
 
   return (
     <UfoContext.Provider

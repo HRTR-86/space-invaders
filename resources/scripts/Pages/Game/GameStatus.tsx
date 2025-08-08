@@ -2,20 +2,25 @@ import { useEffect } from 'react';
 import { IPropsBase } from '@/scripts/Common/System';
 import { PointLabel } from '@/scripts/Pages/Game/PointLabel';
 import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
+import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
 import { EGameStatus } from '@/scripts/Enum/GameStatus';
+import { EImperative } from '@/scripts/Enum/Imperative';
 import { EInvaderType } from '@/scripts/Enum/InvaderType';
 import { EKeyCode } from '@/scripts/Enum/KeyCode';
 
 interface IProps extends IPropsBase {}
 
 export const GameStatus = (_: IProps) => {
-  const { gameStatus, setGameStatus } = useGameStatusContext();
+  const { gameStatus } = useGameStatusContext();
+  const { handleAddImperative } = useImperativeContext();
 
   /**
    * ゲームを開始する
    */
   const startGame = () => {
-    setGameStatus(EGameStatus.PLAYING);
+    handleAddImperative({
+      message: EImperative.INITIALIZE_SETTINGS,
+    });
   };
 
   /**
