@@ -15,7 +15,7 @@ interface IProps extends IPropsBase {}
 
 export const Beam = (_: IProps) => {
   const { invaderTwoDimensionalList, getExistInvaderType } = useInvaderContext();
-  const { isExist: isExistUfo } = useUfoContext();
+  const { isExist: isExistUfo, pointRef } = useUfoContext();
   const { batteryCoordinate, isDestroyed } = useBatteryContext();
   const { beamCoordinate, setBeamCoordinate } = useBeamContext();
   const { setImperative, handleAddImperative } = useImperativeContext();
@@ -109,6 +109,9 @@ export const Beam = (_: IProps) => {
         if (invaderType === EInvaderType.UFO) {
           setImperative({
             message: EImperative.BEAM_HIT_UFO,
+            payload: {
+              point: pointRef.current,
+            },
           });
           return;
         }

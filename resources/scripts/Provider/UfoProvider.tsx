@@ -9,10 +9,11 @@ import {
   useState,
 } from 'react';
 import { IPropsBase, sleep } from '@/scripts/Common/System';
+import { useGameStatusContext } from '@/scripts/Provider/GamaStatusProvider';
 import { useImperativeContext } from '@/scripts/Provider/ImperativeProvider';
 import { EImperative } from '@/scripts/Enum/Imperative';
+import { EInvaderType } from '@/scripts/Enum/InvaderType';
 import { DEFAULT_UFO_COORDINATE } from '@/scripts/Config/Parameter';
-import { EGameStatus } from '@/scripts/Enum/GameStatus';
 
 interface Coordinate {
   x: number;
@@ -26,6 +27,8 @@ interface UfoContext {
   isExist: (x: number, y: number) => boolean;
   isMovingRef: RefObject<boolean>;
   handleChangeIsMoving: (isMoving: boolean) => void;
+  pointRef: RefObject<number>;
+  handleUpdatePoint: () => void;
 }
 
 interface IProps extends IPropsBase {}
@@ -40,10 +43,13 @@ const UfoContext = createContext<UfoContext>({
   isExist: () => false,
   isMovingRef: { current: false },
   handleChangeIsMoving: () => {},
+  pointRef: { current: 0 },
+  handleUpdatePoint: () => {},
 });
 
 export const UfoProvider = ({ children }: IProps) => {
   const { imperative } = useImperativeContext();
+  const { handleAddScore } = useGameStatusContext();
 
   const [ufoCoordinate, setUfoCoordinate] = useState<Coordinate>({
     x: DEFAULT_UFO_COORDINATE.X,
@@ -51,6 +57,7 @@ export const UfoProvider = ({ children }: IProps) => {
   });
   const [isDestroyed, setIsDestroyed] = useState<boolean>(false);
 
+  const pointRef = useRef<number>(0);
   const isMovingRef = useRef<boolean>(false);
   const ufoCoordinateRef = useRef<Coordinate>(ufoCoordinate);
   ufoCoordinateRef.current = ufoCoordinate;
@@ -71,6 +78,29 @@ export const UfoProvider = ({ children }: IProps) => {
    */
   const handleChangeIsMoving = (isMoving: boolean) => {
     isMovingRef.current = isMoving;
+  };
+
+  /**
+   * UFOのポイントを更新する
+   */
+  const handleUpdatePoint = (): void => {
+    const seed = Math.floor(Math.random() * 20) + 1;
+    if (seed === 1) {
+      pointRef.current = 300;
+      return;
+    }
+
+    if (seed <= 3) {
+      pointRef.current = 150;
+      return;
+    }
+
+    if (seed <= 10) {
+      pointRef.current = 100;
+      return;
+    }
+
+    pointRef.current = 50;
   };
 
   /**
@@ -95,9 +125,13 @@ export const UfoProvider = ({ children }: IProps) => {
       return;
     }
 
-    handleChangeIsMoving(false);
+    const { point } = imperative.payload as {
+      point: number;
+    };
 
+    handleChangeIsMoving(false);
     handleChangeAttacked();
+    handleAddScore(EInvaderType.UFO, point);
   }, [imperative]);
 
   return (
@@ -109,6 +143,8 @@ export const UfoProvider = ({ children }: IProps) => {
         isExist,
         isMovingRef,
         handleChangeIsMoving,
+        pointRef,
+        handleUpdatePoint,
       }}
     >
       {children}

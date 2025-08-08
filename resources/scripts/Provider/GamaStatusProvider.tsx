@@ -8,7 +8,7 @@ interface GameStatusContext {
   gameStatus: TGameStatus;
   setGameStatus: Dispatch<SetStateAction<TGameStatus>>;
   score: number;
-  handleAddScore: (invaderType: TInvaderType) => void;
+  handleAddScore: (invaderType: TInvaderType, point?: number) => void;
 }
 
 interface IProps extends IPropsBase {}
@@ -27,17 +27,21 @@ export const GameStatusProvider = ({ children }: IProps) => {
   /**
    * スコアを更新する
    */
-  const handleAddScore = (invaderType: TInvaderType) => {
+  const handleAddScore = (invaderType: TInvaderType, point: number = 0) => {
     setScore((currentScore) => {
       if (invaderType === EInvaderType.UFO) {
-        return currentScore + 100;
+        return currentScore + point;
       }
 
       if (invaderType === EInvaderType.CRAB) {
         return currentScore + 20;
       }
 
-      return currentScore + 10;
+      if (invaderType === EInvaderType.OCTOPUS) {
+        return currentScore + 10;
+      }
+
+      return currentScore;
     });
   };
 

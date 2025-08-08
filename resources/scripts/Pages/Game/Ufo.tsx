@@ -15,8 +15,14 @@ interface IProps extends IPropsBase {}
 
 export const Ufo = (_: IProps) => {
   const { destroyedInvaderCount } = useInvaderContext();
-  const { ufoCoordinate, setUfoCoordinate, isDestroyed, isMovingRef, handleChangeIsMoving } =
-    useUfoContext();
+  const {
+    ufoCoordinate,
+    setUfoCoordinate,
+    isDestroyed,
+    isMovingRef,
+    handleChangeIsMoving,
+    handleUpdatePoint,
+  } = useUfoContext();
 
   let destroyedInvaderCountRef = useRef(destroyedInvaderCount);
   destroyedInvaderCountRef.current = destroyedInvaderCount;
@@ -32,6 +38,7 @@ export const Ufo = (_: IProps) => {
         break;
       }
 
+      handleUpdatePoint();
       await moveUfo();
     }
   };
