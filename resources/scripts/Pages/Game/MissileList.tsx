@@ -12,6 +12,9 @@ export const MissileList = (_: IProps) => {
 
   const [missileCoordinateList, setMissileCoordinateList] = useState<ReactNode[]>([]);
 
+  /**
+   * ミサイルがの攻撃が終了した際の処理
+   */
   const handleFinished = (index: number) => {
     setMissileCoordinateList((currentMissileCoordinateList) => {
       const missileList = [...currentMissileCoordinateList];

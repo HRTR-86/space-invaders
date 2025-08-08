@@ -30,6 +30,10 @@ export const GameStatus = (_: IProps) => {
     if (event.code === EKeyCode.SPACE) {
       startGame();
     }
+
+    if (event.code === EKeyCode.BACKSPACE) {
+      location.reload();
+    }
   };
 
   useEffect(() => {
@@ -77,13 +81,13 @@ export const GameStatus = (_: IProps) => {
       {gameStatus === EGameStatus.GAME_OVER && (
         <>
           <p style={{ fontSize: '42px' }}>Game Over</p>
-          <p style={{ margin: '48px 0 0 0' }}>PRESS "SPACE" TO RESTART</p>
+          <p style={{ margin: '48px 0 0 0' }}>PRESS "ENTER" TO TITLE</p>
         </>
       )}
       {gameStatus === EGameStatus.GAME_CLEAR && (
         <>
           <p style={{ fontSize: '42px' }}>Game Clear</p>
-          <p style={{ margin: '48px 0 0 0' }}>PRESS "SPACE" TO RESTART</p>
+          <p style={{ margin: '48px 0 0 0' }}>PRESS "ENTER" TO TITLE</p>
         </>
       )}
     </div>

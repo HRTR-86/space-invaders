@@ -22,6 +22,9 @@ const ImperativeContext = createContext<ImperativeContext>({
 export const ImperativeProvider = ({ children }: IProps) => {
   const [imperativeList, setImperativeList] = useState<Imperative[]>([]);
 
+  /**
+   * 命令を追加する
+   */
   const handleAddImperative = (newImperative: Imperative) => {
     setImperativeList((currentImperativeList) => [...currentImperativeList, newImperative]);
   };
