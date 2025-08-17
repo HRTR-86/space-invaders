@@ -27,11 +27,11 @@ export const GameStatus = (_: IProps) => {
    * キーボードが押されたときの処理
    */
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.code === EKeyCode.SPACE) {
+    if (event.code === EKeyCode.SPACE && gameStatus === EGameStatus.DEFAULT) {
       startGame();
     }
 
-    if (event.code === EKeyCode.BACKSPACE) {
+    if (event.code === EKeyCode.BACKSPACE && gameStatus !== EGameStatus.DEFAULT) {
       location.reload();
     }
   };
@@ -80,14 +80,14 @@ export const GameStatus = (_: IProps) => {
       )}
       {gameStatus === EGameStatus.GAME_OVER && (
         <>
-          <p style={{ fontSize: '42px' }}>Game Over</p>
-          <p style={{ margin: '48px 0 0 0' }}>PRESS "ENTER" TO TITLE</p>
+          <p style={{ fontSize: '42px' }}>GAME OVER</p>
+          <p style={{ margin: '48px 0 0 0' }}>PRESS "BACK SPACE" TO TITLE</p>
         </>
       )}
       {gameStatus === EGameStatus.GAME_CLEAR && (
         <>
-          <p style={{ fontSize: '42px' }}>Game Clear</p>
-          <p style={{ margin: '48px 0 0 0' }}>PRESS "ENTER" TO TITLE</p>
+          <p style={{ fontSize: '42px' }}>GAME CLEAR</p>
+          <p style={{ margin: '48px 0 0 0' }}>PRESS "BACK SPACE" TO TITLE</p>
         </>
       )}
     </div>

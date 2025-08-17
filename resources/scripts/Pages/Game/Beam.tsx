@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IPropsBase, sleep } from '@/scripts/Common/System';
 import { Visible } from '@/scripts/Component/Visible';
 import { useBatteryContext } from '@/scripts/Provider/BatteryProvider';
@@ -11,6 +11,14 @@ import { EInvaderType, TInvaderType } from '@/scripts/Enum/InvaderType';
 import { EKeyCode } from '@/scripts/Enum/KeyCode';
 import { BEAM_SLEEP_TIME, BOARD_HEIGHT } from '@/scripts/Config/Parameter';
 
+interface IDestroyed {
+  coordinate: {
+    x: number;
+    y: number;
+  };
+  invaderType: TInvaderType;
+}
+
 interface IProps extends IPropsBase {}
 
 export const Beam = (_: IProps) => {
@@ -20,6 +28,14 @@ export const Beam = (_: IProps) => {
   const { batteryCoordinate, isDestroyed } = useBatteryContext();
   const { beamCoordinate, setBeamCoordinate } = useBeamContext();
 
+  const [destroyed, setDestroyed] = useState<IDestroyed>({
+    coordinate: {
+      x: 0,
+      y: 0,
+    },
+    invaderType: EInvaderType.DEFAULT,
+  });
+
   const isAttackingRef = useRef<boolean>(false);
 
   /**
@@ -28,9 +44,6 @@ export const Beam = (_: IProps) => {
   const shotBeam = (): Promise<{ coordinate: Coordinate; invaderType: TInvaderType }> => {
     return new Promise(async (resolve) => {
       const shotBeamCoordinateX = batteryCoordinate.x;
-      let isAttacked = false;
-      let hitCoordinate = { x: 0, y: 0 };
-      let invaderType: TInvaderType = EInvaderType.DEFAULT;
       isAttackingRef.current = true;
 
       while (true) {
@@ -47,10 +60,15 @@ export const Beam = (_: IProps) => {
             };
           }
 
-          invaderType = getExistInvaderType(shotBeamCoordinateX, newBeamCoordinateY);
+          const invaderType = getExistInvaderType(shotBeamCoordinateX, newBeamCoordinateY);
           if (invaderType !== EInvaderType.DEFAULT) {
-            hitCoordinate = { x: shotBeamCoordinateX, y: newBeamCoordinateY };
-            isAttacked = true;
+            setDestroyed({
+              coordinate: {
+                x: shotBeamCoordinateX,
+                y: newBeamCoordinateY,
+              },
+              invaderType: invaderType,
+            });
             isAttackingRef.current = false;
 
             // 初期地点にビームを戻す
@@ -61,9 +79,13 @@ export const Beam = (_: IProps) => {
           }
 
           if (isExistUfo(shotBeamCoordinateX, newBeamCoordinateY)) {
-            hitCoordinate = { x: shotBeamCoordinateX, y: newBeamCoordinateY };
-            invaderType = EInvaderType.UFO;
-            isAttacked = true;
+            setDestroyed({
+              coordinate: {
+                x: shotBeamCoordinateX,
+                y: newBeamCoordinateY,
+              },
+              invaderType: EInvaderType.UFO,
+            });
             isAttackingRef.current = false;
 
             // 初期地点にビームを戻す
@@ -81,13 +103,6 @@ export const Beam = (_: IProps) => {
         });
 
         if (!isAttackingRef.current) {
-          if (isAttacked) {
-            resolve({
-              coordinate: hitCoordinate,
-              invaderType: invaderType,
-            });
-          }
-
           break;
         }
 
@@ -126,6 +141,36 @@ export const Beam = (_: IProps) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (destroyed.invaderType === EInvaderType.DEFAULT) {
+      return;
+    }
+
+    if (destroyed.invaderType === EInvaderType.UFO) {
+      handleAddImperative({
+        message: EImperative.BEAM_HIT_UFO,
+        payload: {
+          point: pointRef.current,
+        },
+      });
+      return;
+    }
+
+    if (
+      destroyed.invaderType === EInvaderType.OCTOPUS ||
+      destroyed.invaderType === EInvaderType.CRAB
+    ) {
+      handleAddImperative({
+        message: EImperative.BEAM_HIT_INVADER,
+        payload: {
+          coordinate: destroyed.coordinate,
+          invaderType: destroyed.invaderType,
+        },
+      });
+      return;
+    }
+  }, [destroyed]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
